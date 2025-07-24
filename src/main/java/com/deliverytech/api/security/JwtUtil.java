@@ -38,20 +38,19 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    public String generateToken(UserDetails userDetails, Usuario usuario) {
-        Map<String, Object> claims = new HashMap<>();
+   // Em JwtUtil.java
+// Mude a assinatura para aceitar apenas UserDetails
+public String generateToken(UserDetails userDetails) {
+    Map<String, Object> claims = new HashMap<>();
+
+    if (userDetails instanceof Usuario) {
+        Usuario usuario = (Usuario) userDetails;
         claims.put("userId", usuario.getId());
-        claims.put("role", usuario.getRole());
-
-        if (usuario.getRestaurante() != null) {
-            claims.put("restauranteId", usuario.getRestaurante().getId());
-        } else {
-            System.out.println("Warning: Usuario " + usuario.getEmail() + " does not have an associated restaurant.");
-        }
-    
-
-        return createToken(claims, userDetails.getUsername());
+        claims.put("role", usuario.getRole().name()); 
     }
+
+    return createToken(claims, userDetails.getUsername());
+}
 
     private String createToken(Map<String, Object> claims, String subject) {
         long expiration = 1000 * 60 * 60 * 24; 

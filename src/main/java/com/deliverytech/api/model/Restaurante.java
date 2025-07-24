@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -45,4 +48,7 @@ public class Restaurante {
     @Schema(description = "Data e hora de cadastro do restaurante", example = "2025-07-23T10:00:00")
     private LocalDateTime dataCadastro = LocalDateTime.now();
 
+    @OneToMany(mappedBy = "restaurante")
+    @JsonIgnore
+private List<Usuario> usuarios;
 }

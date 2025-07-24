@@ -26,7 +26,7 @@ public class SecurityConfig {
         http
         
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/h2-console/**")
+                .ignoringRequestMatchers("/h2-console/**", "/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs-json/**", "/webjars/**")
             )
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/h2-console/**").permitAll()
@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .requestMatchers("/v3/api-docs-json/**").permitAll()
                 .requestMatchers("/webjars/**").permitAll()
                 .requestMatchers("/api/v1/auth/**").permitAll()
+        
         .anyRequest().authenticated()
             )
             .sessionManagement(session -> session

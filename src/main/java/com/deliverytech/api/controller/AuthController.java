@@ -96,7 +96,7 @@ public class AuthController {
         usuarioRepository.save(usuario);
 
         // Passando 'usuario' duas vezes para corresponder à assinatura generateToken(UserDetails, Usuario)
-        String token = jwtUtil.generateToken(usuario, usuario);
+        String token = jwtUtil.generateToken(usuario);
         return ResponseEntity.ok(token);
     }
 
@@ -133,7 +133,7 @@ public class AuthController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")); // Lança 404 se não encontrar
 
         // Passando 'usuario' duas vezes para corresponder à assinatura generateToken(UserDetails, Usuario)
-        String token = jwtUtil.generateToken(usuario, usuario);
+        String token = jwtUtil.generateToken(usuario);
         return ResponseEntity.ok(token);
     }
 }
