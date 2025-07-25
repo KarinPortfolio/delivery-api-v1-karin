@@ -22,4 +22,21 @@ public class PedidoRequest {
 
     @NotNull
     private List<ItemPedidoRequest> itens;
+
+    // Getters manuais para resolver problemas do Lombok
+    public Long getClienteId() {
+        return clienteId;
+    }
+
+    public Long getRestauranteId() {
+        return restauranteId;
+    }
+
+    public Endereco getEnderecoEntrega() {
+        return enderecoEntrega;
+    }
+
+    public List<ItemPedidoRequest> getItens() {
+        return itens;
+    }
 }

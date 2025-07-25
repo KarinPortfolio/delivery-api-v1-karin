@@ -24,12 +24,26 @@ public class UsuarioDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com email: " + email));
+        try {
+            System.out.println("Tentando carregar usuário com email: " + email);
+            
+            Usuario usuario = usuarioRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com email: " + email));
 
-        return new User(
-                usuario.getEmail(),
-                usuario.getSenha(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRole().name()))); // <-- ADICIONE .name() AQUI!
+            System.out.println("Usuário encontrado: " + usuario.getEmail() + ", Ativo: " + usuario.getAtivo());
+
+            if (!usuario.getAtivo()) {
+                throw new UsernameNotFoundException("Usuário inativo: " + email);
+            }
+
+            return new User(
+                    usuario.getEmail(),
+                    usuario.getSenha(),
+                    Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRole())));
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar usuário: " + e.getMessage());
+            e.printStackTrace();
+            throw new UsernameNotFoundException("Erro ao carregar usuário: " + email, e);
+        }
     }
 }

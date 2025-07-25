@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -70,9 +71,32 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
   }
 
-  @ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleGenericException(
       Exception ex, WebRequest request) {
+
+    // Log completo da exceção para debug
+    System.err.println("=== GLOBALEXCEPTIONHANDLER DEBUG ===");
+    System.err.println("URL: " + request.getDescription(false));
+    System.err.println("Exceção: " + ex.getClass().getName());
+    System.err.println("Mensagem: " + ex.getMessage());
+    System.err.println("Stack trace:");
+    ex.printStackTrace();
+    System.err.println("=== FIM DEBUG ===");
+
+    // Se for o endpoint de login, vamos re-lançar a exceção para ver o erro real
+    if (request.getDescription(false).contains("/auth/login")) {
+      System.err.println("Re-lançando exceção do login para debug...");
+      throw new RuntimeException("Erro no login: " + ex.getMessage(), ex);
+    }
+    
+    // Não capturar exceções de segurança/autenticação - verificar pelo nome da classe
+    String className = ex.getClass().getName();
+    if (className.contains("AuthenticationException") ||
+        className.contains("AccessDeniedException") ||
+        ex instanceof ResponseStatusException) {
+      throw new RuntimeException(ex); // Re-lançar para ser tratada pelo controller específico
+    }
 
     ErrorResponse errorResponse = new ErrorResponse(
         HttpStatus.INTERNAL_SERVER_ERROR.value(),

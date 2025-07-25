@@ -14,4 +14,13 @@ public class ItemPedidoRequest {
 
     @Positive
     private Integer quantidade;
+
+    // Getters manuais para resolver problemas do Lombok
+    public Long getProdutoId() {
+        return produtoId;
+    }
+
+    public Integer getQuantidade() {
+        return quantidade;
+    }
 }

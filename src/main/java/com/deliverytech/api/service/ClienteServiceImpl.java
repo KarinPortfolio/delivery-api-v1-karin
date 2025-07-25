@@ -17,7 +17,10 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Cliente cadastrar(Cliente cliente) {
-    
+        // Verificar se já existe um cliente com o mesmo email
+        if (clienteRepository.existsByEmail(cliente.getEmail())) {
+            throw new RuntimeException("Já existe um cliente cadastrado com este email: " + cliente.getEmail());
+        }
         return clienteRepository.save(cliente);
     }
 

@@ -1,4 +1,3 @@
-// src/main/java/com/deliverytech/api/model/Produto.java
 package com.deliverytech.api.model;
 
 import jakarta.persistence.*;
@@ -41,4 +40,13 @@ public class Produto {
     @JoinColumn(name = "restaurante_id")
     @Schema(description = "Restaurante ao qual o produto pertence")
     private Restaurante restaurante;
+
+    // Getters manuais para resolver problemas do Lombok
+    public String getNome() {
+        return nome;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
 }

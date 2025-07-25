@@ -1,4 +1,3 @@
-// src/main/java/com/deliverytech/api/model/Cliente.java
 package com.deliverytech.api.model;
 
 import jakarta.persistence.*;
@@ -35,4 +34,17 @@ public class Cliente {
     @Builder.Default
     @Schema(description = "Data e hora de cadastro do cliente", example = "2025-07-23T10:00:00")
     private LocalDateTime dataCadastro = LocalDateTime.now();
+
+    // Getters manuais para resolver problemas do Lombok
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
 }

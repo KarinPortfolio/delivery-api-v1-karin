@@ -19,4 +19,13 @@ public class LoginRequest {
     @NotBlank(message = "A senha não pode estar em branco")
     @Schema(description = "Senha do usuário", example = "senha123")
     private String senha;
+    
+    // Getters manuais para contornar problema do Lombok
+    public String getEmail() {
+        return this.email;
+    }
+    
+    public String getSenha() {
+        return this.senha;
+    }
 }

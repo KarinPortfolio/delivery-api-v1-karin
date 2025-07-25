@@ -19,4 +19,13 @@ public class ClienteRequest {
     @Email(message = "Email deve ser um formato válido")
     @Schema(description = "Endereço de e-mail do cliente (único)", example = "joao.teste@example.com")
     private String email;
+
+    // Getters manuais para resolver problemas do Lombok
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }

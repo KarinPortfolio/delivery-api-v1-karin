@@ -1,10 +1,11 @@
 package com.deliverytech.api.security;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -13,12 +14,13 @@ import com.deliverytech.api.model.Usuario;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
 
+    // Chave secreta para assinar os tokens JWT
+    // Em produção, isso deveria vir de uma variável de ambiente
     private final String SECRET_KEY = "JC2GKgrBEXtx43g+LYuHLZ6sHDyX7K5t1mlzgOp8J/vskql8+qBvAIdLqO+WUypIkPmGoN5xxpYOnUD3D0ywLg==";
 
     public String extractUsername(String token) {
@@ -31,35 +33,42 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
+        return Jwts.parser()
+                .verifyWith(getSignKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
-    private Key getSignKey() {
+    private SecretKey getSignKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-   // Em JwtUtil.java
-// Mude a assinatura para aceitar apenas UserDetails
-public String generateToken(UserDetails userDetails) {
-    Map<String, Object> claims = new HashMap<>();
-
-    if (userDetails instanceof Usuario) {
-        Usuario usuario = (Usuario) userDetails;
+    public String generateToken(UserDetails userDetails, Usuario usuario) {
+        Map<String, Object> claims = new HashMap<>();
         claims.put("userId", usuario.getId());
-        claims.put("role", usuario.getRole().name()); 
+        claims.put("role", usuario.getRole());
+
+        try {
+            if (usuario.getRestaurante() != null) {
+                claims.put("restauranteId", usuario.getRestaurante().getId());
+            }
+        } catch (Exception e) {
+            // Log do erro sem interromper o processo de geração do token
+            System.out.println("Warning: Could not access restaurant for user " + usuario.getEmail() + ": " + e.getMessage());
+        }
+
+        return createToken(claims, userDetails.getUsername());
     }
 
-    return createToken(claims, userDetails.getUsername());
-}
-
     private String createToken(Map<String, Object> claims, String subject) {
-        long expiration = 1000 * 60 * 60 * 24; 
+        long expiration = 1000 * 60 * 60 * 24; // 24 horas
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignKey())
                 .compact();
     }
 

@@ -96,7 +96,7 @@ public class AuthController {
         usuarioRepository.save(usuario);
 
         // Passando 'usuario' duas vezes para corresponder à assinatura generateToken(UserDetails, Usuario)
-        String token = jwtUtil.generateToken(usuario);
+        String token = jwtUtil.generateToken(usuario, usuario);
         return ResponseEntity.ok(token);
     }
 
@@ -125,15 +125,47 @@ public class AuthController {
         }
     )
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @org.springframework.web.bind.annotation.RequestBody LoginRequest request) { // <-- AGORA SEMPRE QUALIFICADO
-        authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha()));
-
-        Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado")); // Lança 404 se não encontrar
-
-        // Passando 'usuario' duas vezes para corresponder à assinatura generateToken(UserDetails, Usuario)
-        String token = jwtUtil.generateToken(usuario);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<String> login(@Valid @org.springframework.web.bind.annotation.RequestBody LoginRequest request) {
+        try {
+            System.out.println("=== INÍCIO LOGIN ===");
+            System.out.println("Passo 1: Iniciando autenticação...");
+            
+            // Tentar autenticar diretamente
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha())
+            );
+            
+            System.out.println("Passo 2: Autenticação bem-sucedida!");
+            
+            // Buscar usuário
+            Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            
+            System.out.println("Passo 3: Usuário encontrado no banco");
+            
+            // Verificar se está ativo
+            if (!usuario.getAtivo()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário inativo");
+            }
+            
+            System.out.println("Passo 4: Gerando token...");
+            
+            // Gerar token
+            String token = jwtUtil.generateToken(usuario, usuario);
+            
+            System.out.println("Passo 5: Token gerado com sucesso!");
+            System.out.println("=== FIM LOGIN SUCESSO ===");
+            
+            return ResponseEntity.ok(token);
+            
+        } catch (Exception e) {
+            System.err.println("=== ERRO NO LOGIN ===");
+            System.err.println("Tipo: " + e.getClass().getSimpleName());
+            System.err.println("Mensagem: " + e.getMessage());
+            System.err.println("=== FIM ERRO ===");
+            
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro de autenticação: " + e.getMessage());
+        }
     }
 }

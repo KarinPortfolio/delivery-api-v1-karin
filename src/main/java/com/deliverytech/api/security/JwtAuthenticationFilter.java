@@ -45,6 +45,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             filterChain.doFilter(request, response);
             return;
+        } catch (Exception e) {
+            // Log do erro e continua o filtro sem autenticar
+            System.err.println("Erro ao processar JWT: " + e.getMessage());
+            filterChain.doFilter(request, response);
+            return;
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

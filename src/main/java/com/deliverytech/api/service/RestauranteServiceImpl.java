@@ -38,9 +38,7 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     @Override
     public List<Restaurante> buscarPorCategoria(String categoria) {
-        // Implemente a busca por categoria no seu repositório, ex: findByCategoria(categoria)
-        // return restauranteRepository.findByCategoria(categoria);
-        return List.of(); // Retorno de exemplo
+        return restauranteRepository.findByCategoria(categoria);
     }
 
     @Override

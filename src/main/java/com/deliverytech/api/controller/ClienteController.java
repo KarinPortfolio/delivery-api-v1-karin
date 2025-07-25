@@ -5,10 +5,10 @@ import com.deliverytech.api.dto.response.ClienteResponse;
 import com.deliverytech.api.model.Cliente;
 import com.deliverytech.api.service.ClienteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus; // Importe para HttpStatus
+import org.springframework.http.HttpStatus; 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException; // Importe para ResponseStatusException
+import org.springframework.web.server.ResponseStatusException; 
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -20,16 +20,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody; // Cuidado para não confundir com Spring @RequestBody
+import io.swagger.v3.oas.annotations.parameters.RequestBody; 
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 @RestController
-@RequestMapping("/api/v1/clientes") // <-- Ajustado para /api/v1/clientes
+@RequestMapping("/api/v1/clientes") 
 @RequiredArgsConstructor
-@Tag(name = "Clientes", description = "Operações de gerenciamento de clientes") // Tag para agrupar no Swagger UI
+@Tag(name = "Clientes", description = "Operações de gerenciamento de clientes") 
 @SecurityRequirement(name = "bearerAuth") // Indica que todos os endpoints neste controller exigem JWT
 public class ClienteController {
 
@@ -60,15 +60,15 @@ public class ClienteController {
         }
     )
     @PostMapping
-    public ResponseEntity<ClienteResponse> cadastrar(@Valid @org.springframework.web.bind.annotation.RequestBody ClienteRequest request) { // <-- AGORA SEMPRE QUALIFICADO
-        // Você pode adicionar lógica de verificação de email duplicado no serviço aqui
+    public ResponseEntity<ClienteResponse> cadastrar(@Valid @org.springframework.web.bind.annotation.RequestBody ClienteRequest request) { 
+        
         Cliente cliente = Cliente.builder()
                 .nome(request.getNome())
                 .email(request.getEmail())
-                .ativo(true) // Padrão para novo cliente
+                .ativo(true)
                 .build();
         Cliente salvo = clienteService.cadastrar(cliente);
-        return ResponseEntity.status(HttpStatus.CREATED) // Retorna 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED) 
                 .body(new ClienteResponse(salvo.getId(), salvo.getNome(), salvo.getEmail(), salvo.getAtivo()));
     }
 
@@ -107,7 +107,7 @@ public class ClienteController {
         return clienteService.buscarPorId(id)
                 .map(c -> new ClienteResponse(c.getId(), c.getNome(), c.getEmail(), c.getAtivo()))
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado com ID: " + id)); // Lança 404
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado com ID: " + id)); 
     }
 
     @Operation(
@@ -138,7 +138,7 @@ public class ClienteController {
     )
     @PutMapping("/{id}")
     public ResponseEntity<ClienteResponse> atualizar(@PathVariable Long id,
-            @Valid @org.springframework.web.bind.annotation.RequestBody ClienteRequest request) { // <-- AGORA SEMPRE QUALIFICADO
+            @Valid @org.springframework.web.bind.annotation.RequestBody ClienteRequest request) { 
         // A lógica de atualização está no serviço
         Cliente atualizado = Cliente.builder()
                 .nome(request.getNome())
