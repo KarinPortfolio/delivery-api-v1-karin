@@ -1,34 +1,96 @@
 package com.deliverytech.api.model;
 
 import jakarta.persistence.Embeddable;
-import lombok.*;
-
-// Importação para OpenAPI/Swagger
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @Embeddable
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Schema(description = "Representa um endereço para entrega")
 public class Endereco {
 
-    @Schema(description = "Nome da rua", example = "Rua das Flores")
     private String rua;
-    
-    @Schema(description = "Número do endereço", example = "123")
     private String numero;
-    
-    @Schema(description = "Bairro", example = "Centro")
     private String bairro;
-    
-    @Schema(description = "Cidade", example = "São Paulo")
     private String cidade;
-    
-    @Schema(description = "Estado", example = "SP")
     private String estado;
-    
-    @Schema(description = "CEP", example = "01234-567")
     private String cep;
+
+    // Constructors
+    public Endereco() {}
+
+    public Endereco(String rua, String numero, String bairro, String cidade, String estado, String cep) {
+        this.rua = rua;
+        this.numero = numero;
+        this.bairro = bairro;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.cep = cep;
+    }
+
+    // Getters
+    public String getRua() {
+        return rua;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    // Setters
+    public void setRua(String rua) {
+        this.rua = rua;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        Endereco endereco = (Endereco) obj;
+        
+        return java.util.Objects.equals(this.rua, endereco.rua) &&
+               java.util.Objects.equals(this.numero, endereco.numero) &&
+               java.util.Objects.equals(this.bairro, endereco.bairro) &&
+               java.util.Objects.equals(this.cidade, endereco.cidade) &&
+               java.util.Objects.equals(this.estado, endereco.estado) &&
+               java.util.Objects.equals(this.cep, endereco.cep);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(rua, numero, bairro, cidade, estado, cep);
+    }
 }

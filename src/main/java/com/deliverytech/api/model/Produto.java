@@ -1,52 +1,115 @@
 package com.deliverytech.api.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.math.BigDecimal;
 
-// Importação para OpenAPI/Swagger
-import io.swagger.v3.oas.annotations.media.Schema;
-
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Schema(description = "Representa um produto oferecido por um restaurante")
 public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "ID único do produto", example = "101")
     private Long id;
 
-    @Schema(description = "Nome do produto", example = "Pizza Calabresa Grande")
     private String nome;
-
-    @Schema(description = "Categoria do produto (ex: Pizzas, Bebidas, Sobremesas)", example = "Pizzas")
     private String categoria;
-
-    @Schema(description = "Descrição detalhada do produto", example = "Pizza com molho de tomate, mussarela, calabresa e cebola.")
     private String descricao;
-
-    @Schema(description = "Preço do produto", example = "45.90")
     private BigDecimal preco;
-
-    @Builder.Default
-    @Schema(description = "Indica se o produto está disponível para venda", example = "true")
     private Boolean disponivel = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurante_id")
-    @Schema(description = "Restaurante ao qual o produto pertence")
     private Restaurante restaurante;
 
-    // Getters manuais para resolver problemas do Lombok
+    // Constructors
+    public Produto() {}
+
+    public Produto(Long id, String nome, String categoria, String descricao, BigDecimal preco, Boolean disponivel, Restaurante restaurante) {
+        this.id = id;
+        this.nome = nome;
+        this.categoria = categoria;
+        this.descricao = descricao;
+        this.preco = preco;
+        this.disponivel = disponivel;
+        this.restaurante = restaurante;
+    }
+
+    // Getters
+    public Long getId() {
+        return id;
+    }
+
     public String getNome() {
         return nome;
     }
 
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
     public BigDecimal getPreco() {
         return preco;
+    }
+
+    public Boolean getDisponivel() {
+        return disponivel;
+    }
+
+    public Restaurante getRestaurante() {
+        return restaurante;
+    }
+
+    // Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
+
+    public void setDisponivel(Boolean disponivel) {
+        this.disponivel = disponivel;
+    }
+
+    public void setRestaurante(Restaurante restaurante) {
+        this.restaurante = restaurante;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        Produto produto = (Produto) obj;
+        
+        // Compara todos os campos principais
+        return java.util.Objects.equals(this.id, produto.id) &&
+               java.util.Objects.equals(this.nome, produto.nome) &&
+               java.util.Objects.equals(this.categoria, produto.categoria) &&
+               java.util.Objects.equals(this.descricao, produto.descricao) &&
+               java.util.Objects.equals(this.preco, produto.preco) &&
+               java.util.Objects.equals(this.disponivel, produto.disponivel) &&
+               java.util.Objects.equals(this.restaurante, produto.restaurante);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, nome, categoria, descricao, preco, disponivel, restaurante);
     }
 }

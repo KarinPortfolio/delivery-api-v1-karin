@@ -1,43 +1,39 @@
 package com.deliverytech.api.controller;
 
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.deliverytech.api.dto.request.LoginRequest;
 import com.deliverytech.api.dto.request.RegisterRequest;
-import com.deliverytech.api.model.Role;
 import com.deliverytech.api.model.Restaurante;
+import com.deliverytech.api.model.Role;
 import com.deliverytech.api.model.Usuario;
 import com.deliverytech.api.repository.RestauranteRepository;
 import com.deliverytech.api.repository.UsuarioRepository;
 import com.deliverytech.api.security.JwtUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus; // Importe para HttpStatus
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException; // Importe para ResponseStatusException
-
-import jakarta.validation.Valid;
-import java.util.Optional;
-
-// Importações para OpenAPI/Swagger
 import io.swagger.v3.oas.annotations.Operation;
-
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody; // Cuidado para não confundir com Spring @RequestBody
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import io.swagger.v3.oas.annotations.media.Content;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/auth")
-@RequiredArgsConstructor
-@Tag(name = "Autenticação", description = "Operações de registro e login de usuários") // Tag para agrupar no Swagger UI
-// Não adicione @SecurityRequirement(name = "bearerAuth") aqui, pois login e register são endpoints públicos
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Tag(name = "Autenticação", description = "Endpoints para login e registro de usuários")
 public class AuthController {
 
     private final UsuarioRepository usuarioRepository;
@@ -46,126 +42,131 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    @Operation(
-        summary = "Registra um novo usuário",
-        description = "Permite o cadastro de novos usuários (clientes, administradores, entregadores) no sistema. Retorna um token JWT após o registro bem-sucedido.",
-        requestBody = @RequestBody(
-            description = "Detalhes do novo usuário para registro",
-            required = true,
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = RegisterRequest.class),
-                examples = @ExampleObject(
-                    name = "Exemplo de Registro de Cliente",
-                    value = "{\"nome\": \"João da Silva\", \"email\": \"joao.silva@example.com\", \"senha\": \"minhasenhaforte\", \"role\": \"CLIENTE\"}"
-                )
-            )
-        ),
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Usuário registrado com sucesso, retorna JWT",
-                content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1Ni..."))),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos ou email já cadastrado",
-                content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "Email já cadastrado"))),
-            @ApiResponse(responseCode = "404", description = "Restaurante não encontrado (se restauranteId for fornecido e inválido)",
-                content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "Restaurante com ID 999 não encontrado.")))
-        }
-    )
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @org.springframework.web.bind.annotation.RequestBody RegisterRequest request) { // <-- AGORA SEMPRE QUALIFICADO
-        if (usuarioRepository.findByEmail(request.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email já cadastrado");
-        }
-
-        Usuario.UsuarioBuilder usuarioBuilder = Usuario.builder()
-                .email(request.getEmail())
-                .senha(passwordEncoder.encode(request.getSenha()))
-                .nome(request.getNome())
-                .role(request.getRole() != null ? request.getRole() : Role.CLIENTE)
-                .ativo(true);
-
-        if (request.getRestauranteId() != null) {
-            Optional<Restaurante> restauranteOptional = restauranteRepository.findById(request.getRestauranteId());
-            if (restauranteOptional.isPresent()) {
-                usuarioBuilder.restaurante(restauranteOptional.get());
-            } else {
-                return ResponseEntity.badRequest().body("Restaurante com ID " + request.getRestauranteId() + " não encontrado.");
-            }
-        }
-
-        Usuario usuario = usuarioBuilder.build();
-        usuarioRepository.save(usuario);
-
-        // Passando 'usuario' duas vezes para corresponder à assinatura generateToken(UserDetails, Usuario)
-        String token = jwtUtil.generateToken(usuario, usuario);
-        return ResponseEntity.ok(token);
+    public AuthController(UsuarioRepository usuarioRepository, 
+                         RestauranteRepository restauranteRepository,
+                         PasswordEncoder passwordEncoder,
+                         AuthenticationManager authenticationManager,
+                         JwtUtil jwtUtil) {
+        this.usuarioRepository = usuarioRepository;
+        this.restauranteRepository = restauranteRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
-    @Operation(
-        summary = "Autentica um usuário",
-        description = "Autentica um usuário com email e senha. Retorna um token JWT se as credenciais forem válidas.",
-        requestBody = @RequestBody(
-            description = "Credenciais do usuário para login",
-            required = true,
-            content = @Content(
-                mediaType = "application/json",
-                schema = @Schema(implementation = LoginRequest.class),
-                examples = @ExampleObject(
-                    name = "Exemplo de Login",
-                    value = "{\"email\": \"usuario@example.com\", \"senha\": \"senha123\"}"
-                )
-            )
-        ),
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Login bem-sucedido, retorna JWT",
-                content = @Content(mediaType = "text/plain", schema = @Schema(type = "string", example = "eyJhbGciOiJIUzI1Ni..."))),
-            @ApiResponse(responseCode = "401", description = "Credenciais inválidas (email ou senha incorretos)",
-                content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"status\": 401, \"error\": \"Unauthorized\", \"message\": \"Bad credentials\"}"))),
-            @ApiResponse(responseCode = "404", description = "Usuário não encontrado (se o email não existir)",
-                content = @Content(mediaType = "application/json", schema = @Schema(example = "{\"status\": 404, \"error\": \"Not Found\", \"message\": \"Usuário não encontrado\"}")))
-        }
-    )
+    @RequestMapping(value = "/**", method = RequestMethod.OPTIONS)
+    public ResponseEntity<?> handleOptions() {
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Realizar login", 
+               description = "Autentica um usuário e retorna um token JWT")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Login realizado com sucesso",
+                    content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "401", description = "Credenciais inválidas",
+                    content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos",
+                    content = @Content(mediaType = "application/json"))
+    })
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @org.springframework.web.bind.annotation.RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
-            System.out.println("=== INÍCIO LOGIN ===");
-            System.out.println("Passo 1: Iniciando autenticação...");
-            
-            // Tentar autenticar diretamente
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha())
-            );
-            
-            System.out.println("Passo 2: Autenticação bem-sucedida!");
-            
             // Buscar usuário
-            Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-            
-            System.out.println("Passo 3: Usuário encontrado no banco");
-            
-            // Verificar se está ativo
-            if (!usuario.getAtivo()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário inativo");
+            Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(loginRequest.getEmail());
+            if (!usuarioOpt.isPresent()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("{\"status\": 401, \"error\": \"Unauthorized\", \"message\": \"Credenciais inválidas\"}");
             }
-            
-            System.out.println("Passo 4: Gerando token...");
-            
+
+            Usuario usuario = usuarioOpt.get();
+
+            // Verificar se o usuário está ativo
+            if (!usuario.getAtivo()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("{\"status\": 403, \"error\": \"Forbidden\", \"message\": \"Usuário inativo\"}");
+            }
+
+            // Autenticar
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getSenha())
+            );
+
             // Gerar token
             String token = jwtUtil.generateToken(usuario, usuario);
-            
-            System.out.println("Passo 5: Token gerado com sucesso!");
-            System.out.println("=== FIM LOGIN SUCESSO ===");
-            
-            return ResponseEntity.ok(token);
-            
+
+            return ResponseEntity.ok("{\"token\": \"" + token + "\"}");
+
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body("{\"status\": 401, \"error\": \"Unauthorized\", \"message\": \"Credenciais inválidas\"}");
         } catch (Exception e) {
-            System.err.println("=== ERRO NO LOGIN ===");
-            System.err.println("Tipo: " + e.getClass().getSimpleName());
-            System.err.println("Mensagem: " + e.getMessage());
-            System.err.println("=== FIM ERRO ===");
-            
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro de autenticação: " + e.getMessage());
+                .body("{\"status\": 500, \"error\": \"Internal Server Error\", \"message\": \"Erro interno do servidor\"}");
+        }
+    }
+
+    @Operation(summary = "Registrar novo usuário", 
+               description = "Cria uma nova conta de usuário no sistema")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Usuário criado com sucesso",
+                    content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "400", description = "Email já existe ou dados inválidos",
+                    content = @Content(mediaType = "application/json")),
+        @ApiResponse(responseCode = "500", description = "Erro interno do servidor",
+                    content = @Content(mediaType = "application/json"))
+    })
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        try {
+            // Verificar se email já existe
+            if (usuarioRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Email já cadastrado\"}");
+            }
+
+            // Verificar se é um usuário ADMIN sem restaurante
+            if (registerRequest.getRole() == Role.ADMIN && registerRequest.getRestauranteId() != null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Usuário ADMIN não pode ter restaurante\"}");
+            }
+
+            // Verificar se é um usuário ADMIN com restaurante válido
+            Restaurante restaurante = null;
+            if (registerRequest.getRole() == Role.ADMIN) {
+                if (registerRequest.getRestauranteId() == null) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Usuário ADMIN deve ter um restaurante\"}");
+                }
+                
+                Optional<Restaurante> restauranteOpt = restauranteRepository.findById(registerRequest.getRestauranteId());
+                if (!restauranteOpt.isPresent()) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Restaurante não encontrado\"}");
+                }
+                restaurante = restauranteOpt.get();
+            }
+
+            // Criar usuário
+            Usuario usuario = new Usuario();
+            usuario.setNome(registerRequest.getNome());
+            usuario.setEmail(registerRequest.getEmail());
+            usuario.setSenha(passwordEncoder.encode(registerRequest.getSenha()));
+            usuario.setRole(registerRequest.getRole());
+            usuario.setRestaurante(restaurante);
+            usuario.setAtivo(true);
+
+            Usuario usuarioSalvo = usuarioRepository.save(usuario);
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                .body("{\"id\": " + usuarioSalvo.getId() + ", \"nome\": \"" + usuarioSalvo.getNome() + "\", \"email\": \"" + usuarioSalvo.getEmail() + "\", \"role\": \"" + usuarioSalvo.getRole() + "\"}");
+
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Dados inválidos ou já existentes\"}");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("{\"status\": 500, \"error\": \"Internal Server Error\", \"message\": \"Erro interno do servidor\"}");
         }
     }
 }

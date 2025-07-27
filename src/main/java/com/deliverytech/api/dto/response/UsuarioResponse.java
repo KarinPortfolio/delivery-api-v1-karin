@@ -2,49 +2,90 @@ package com.deliverytech.api.dto.response;
 
 import com.deliverytech.api.model.Role;
 import com.deliverytech.api.model.Usuario;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-// Importação para OpenAPI/Swagger
-import io.swagger.v3.oas.annotations.media.Schema;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Schema(description = "Resposta contendo os detalhes de um usuário")
 public class UsuarioResponse {
 
-    @Schema(description = "ID único do usuário", example = "1")
     private Long id;
-
-    @Schema(description = "Nome completo do usuário", example = "Carlos Souza")
     private String nome;
-
-    @Schema(description = "Endereço de e-mail do usuário", example = "carlos.souza@example.com")
     private String email;
-
-    @Schema(description = "Papel (role) do usuário no sistema", example = "CLIENTE", implementation = Role.class)
     private Role role;
-
-    @Schema(description = "Indica se a conta do usuário está ativa", example = "true")
     private Boolean ativo;
-
-    @Schema(description = "Data e hora de criação da conta do usuário", example = "2025-07-23T10:00:00")
     private LocalDateTime dataCriacao;
 
+    // Constructors
+    public UsuarioResponse() {
+    }
+
+    public UsuarioResponse(Long id, String nome, String email, Role role, Boolean ativo, LocalDateTime dataCriacao) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.role = role;
+        this.ativo = ativo;
+        this.dataCriacao = dataCriacao;
+    }
+
+    // Getters
+    public Long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
+    }
+
+    // Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    // Factory method
     public static UsuarioResponse fromEntity(Usuario usuario) {
-        return UsuarioResponse.builder()
-                .id(usuario.getId())
-                .nome(usuario.getNome())
-                .email(usuario.getEmail())
-                .role(usuario.getRole())
-                .ativo(usuario.getAtivo())
-                .dataCriacao(usuario.getDataCriacao())
-                .build();
+        return new UsuarioResponse(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                usuario.getRole(),
+                usuario.getAtivo(),
+                usuario.getDataCriacao()
+        );
     }
 }

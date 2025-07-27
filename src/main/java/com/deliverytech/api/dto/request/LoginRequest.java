@@ -1,31 +1,45 @@
 package com.deliverytech.api.dto.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 
-// Importação para OpenAPI/Swagger
-import io.swagger.v3.oas.annotations.media.Schema;
-
-@Data
-@Schema(description = "Requisição para autenticação de usuário (login)")
+@Schema(description = "Dados necessários para realizar login no sistema")
 public class LoginRequest {
 
+    @Schema(description = "Email do usuário", example = "usuario@exemplo.com", required = true)
     @NotBlank(message = "O email não pode estar em branco")
     @Email(message = "Email deve ser um formato válido")
-    @Schema(description = "Endereço de e-mail do usuário", example = "usuario@example.com")
     private String email;
 
+    @Schema(description = "Senha do usuário", example = "123456", required = true)
     @NotBlank(message = "A senha não pode estar em branco")
-    @Schema(description = "Senha do usuário", example = "senha123")
     private String senha;
-    
-    // Getters manuais para contornar problema do Lombok
+
+    // Constructors
+    public LoginRequest() {
+    }
+
+    public LoginRequest(String email, String senha) {
+        this.email = email;
+        this.senha = senha;
+    }
+
+    // Getters
     public String getEmail() {
-        return this.email;
+        return email;
     }
     
     public String getSenha() {
-        return this.senha;
+        return senha;
+    }
+
+    // Setters
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 }

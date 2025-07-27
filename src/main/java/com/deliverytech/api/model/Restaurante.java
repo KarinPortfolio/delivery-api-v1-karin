@@ -2,50 +2,45 @@
 package com.deliverytech.api.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Schema(description = "Representa um restaurante no sistema")
 public class Restaurante {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "ID único do restaurante", example = "1")
     private Long id;
 
     @Column(unique = true)
-    @Schema(description = "Nome do restaurante (único)", example = "Pizzaria Deliciosa")
     private String nome;
 
-    @Schema(description = "Número de telefone do restaurante", example = "551133334444")
     private String telefone;
-
-    @Schema(description = "Categoria do restaurante (ex: Pizza, Japonesa, Brasileira)", example = "Pizza")
     private String categoria;
-
-    @Schema(description = "Taxa de entrega do restaurante", example = "5.00")
     private BigDecimal taxaEntrega;
-
-    @Schema(description = "Tempo mínimo de entrega em minutos", example = "30")
     private Integer tempoEntregaMinutos;
-
-    @Builder.Default
-    @Schema(description = "Indica se o restaurante está ativo para receber pedidos", example = "true")
     private Boolean ativo = true;
-
-    @Builder.Default
-    @Schema(description = "Data e hora de cadastro do restaurante", example = "2025-07-23T10:00:00")
     private LocalDateTime dataCadastro = LocalDateTime.now();
 
-    // Getters manuais para resolver problemas do Lombok
+    // Constructors
+    public Restaurante() {}
+
+    public Restaurante(Long id, String nome, String categoria, String telefone, BigDecimal taxaEntrega, 
+                      Integer tempoEntregaMinutos, Boolean ativo, LocalDateTime dataCadastro) {
+        this.id = id;
+        this.nome = nome;
+        this.categoria = categoria;
+        this.telefone = telefone;
+        this.taxaEntrega = taxaEntrega;
+        this.tempoEntregaMinutos = tempoEntregaMinutos;
+        this.ativo = ativo;
+        this.dataCadastro = dataCadastro;
+    }
+
+    // Getters
+    public Long getId() {
+        return id;
+    }
     public String getNome() {
         return nome;
     }
@@ -70,4 +65,62 @@ public class Restaurante {
         return ativo;
     }
 
+    public LocalDateTime getDataCadastro() {
+        return dataCadastro;
+    }
+
+    // Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public void setTaxaEntrega(BigDecimal taxaEntrega) {
+        this.taxaEntrega = taxaEntrega;
+    }
+
+    public void setTempoEntregaMinutos(Integer tempoEntregaMinutos) {
+        this.tempoEntregaMinutos = tempoEntregaMinutos;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public void setDataCadastro(LocalDateTime dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        Restaurante restaurante = (Restaurante) obj;
+        
+        return java.util.Objects.equals(this.id, restaurante.id) &&
+               java.util.Objects.equals(this.nome, restaurante.nome) &&
+               java.util.Objects.equals(this.telefone, restaurante.telefone) &&
+               java.util.Objects.equals(this.categoria, restaurante.categoria) &&
+               java.util.Objects.equals(this.taxaEntrega, restaurante.taxaEntrega) &&
+               java.util.Objects.equals(this.tempoEntregaMinutos, restaurante.tempoEntregaMinutos) &&
+               java.util.Objects.equals(this.ativo, restaurante.ativo) &&
+               java.util.Objects.equals(this.dataCadastro, restaurante.dataCadastro);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, nome, telefone, categoria, taxaEntrega, tempoEntregaMinutos, ativo, dataCadastro);
+    }
 }

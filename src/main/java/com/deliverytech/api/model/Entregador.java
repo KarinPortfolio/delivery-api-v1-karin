@@ -1,49 +1,83 @@
 package com.deliverytech.api.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-// Importação para OpenAPI/Swagger
-import io.swagger.v3.oas.annotations.media.Schema;
-
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Schema(description = "Representa um entregador no sistema") // Anotação Schema na entidade
 public class Entregador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "ID único do entregador", example = "1")
     private Long id;
 
-    @Schema(description = "Nome completo do entregador", example = "João Silva")
     private String nome;
 
     @Column(unique = true)
-    @Schema(description = "Endereço de e-mail do entregador (único)", example = "joao.silva@example.com")
     private String email;
 
     @Column(unique = true)
-    @Schema(description = "CPF do entregador (único)", example = "123.456.789-00")
     private String cpf;
 
-    @Schema(description = "Número de telefone do entregador", example = "5511987654321")
     private String telefone;
-
-    @Builder.Default
-    @Schema(description = "Indica se o entregador está ativo no sistema", example = "true")
     private Boolean ativo = true;
-
-    @Builder.Default
-    @Schema(description = "Data e hora de criação do registro do entregador", example = "2025-07-23T10:00:00")
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
     @OneToMany(mappedBy = "entregador", cascade = CascadeType.ALL)
-    @Schema(description = "Lista de entregas associadas a este entregador")
     private List<Entrega> entregas;
+
+    // Construtores
+    public Entregador() {}
+
+    public Entregador(Long id, String nome, String email, String cpf, String telefone, Boolean ativo, LocalDateTime dataCriacao, List<Entrega> entregas) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.cpf = cpf;
+        this.telefone = telefone;
+        this.ativo = ativo;
+        this.dataCriacao = dataCriacao;
+        this.entregas = entregas;
+    }
+
+    // Getters
+    public Long getId() { return id; }
+    public String getNome() { return nome; }
+    public String getEmail() { return email; }
+    public String getCpf() { return cpf; }
+    public String getTelefone() { return telefone; }
+    public Boolean getAtivo() { return ativo; }
+    public LocalDateTime getDataCriacao() { return dataCriacao; }
+    public List<Entrega> getEntregas() { return entregas; }
+
+    // Setters
+    public void setId(Long id) { this.id = id; }
+    public void setNome(String nome) { this.nome = nome; }
+    public void setEmail(String email) { this.email = email; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+    public void setAtivo(Boolean ativo) { this.ativo = ativo; }
+    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
+    public void setEntregas(List<Entrega> entregas) { this.entregas = entregas; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        
+        Entregador entregador = (Entregador) obj;
+        
+        return java.util.Objects.equals(this.id, entregador.id) &&
+               java.util.Objects.equals(this.nome, entregador.nome) &&
+               java.util.Objects.equals(this.email, entregador.email) &&
+               java.util.Objects.equals(this.cpf, entregador.cpf) &&
+               java.util.Objects.equals(this.telefone, entregador.telefone) &&
+               java.util.Objects.equals(this.ativo, entregador.ativo) &&
+               java.util.Objects.equals(this.dataCriacao, entregador.dataCriacao);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, nome, email, cpf, telefone, ativo, dataCriacao);
+    }
 }

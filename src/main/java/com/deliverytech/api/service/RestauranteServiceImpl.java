@@ -3,7 +3,6 @@ package com.deliverytech.api.service;
 
 import com.deliverytech.api.model.Restaurante;
 import com.deliverytech.api.repository.RestauranteRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // Importe se usar transações
 import org.springframework.web.server.ResponseStatusException; // Para lançar 404
@@ -13,16 +12,22 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class RestauranteServiceImpl implements RestauranteService {
 
     private final RestauranteRepository restauranteRepository;
+    
+    public RestauranteServiceImpl(RestauranteRepository restauranteRepository) {
+        this.restauranteRepository = restauranteRepository;
+    }
 
     @Override
     @Transactional
     public Restaurante cadastrar(Restaurante restaurante) {
-        // Você pode adicionar a lógica de verificação de nome duplicado aqui no serviço
-        // ou deixar no controller. Se for no serviço, o findByNome deve ser aqui.
+        // Verifica se já existe um restaurante com o mesmo nome
+        Optional<Restaurante> restauranteExistente = restauranteRepository.findByNome(restaurante.getNome());
+        if (restauranteExistente.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe um restaurante cadastrado com este nome: " + restaurante.getNome());
+        }
         return restauranteRepository.save(restaurante);
     }
 
@@ -47,6 +52,14 @@ public class RestauranteServiceImpl implements RestauranteService {
         Restaurante restauranteExistente = restauranteRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Restaurante não encontrado com ID: " + id));
 
+        // Verifica se o novo nome já existe em outro restaurante
+        if (restauranteDetalhes.getNome() != null && !restauranteDetalhes.getNome().equals(restauranteExistente.getNome())) {
+            Optional<Restaurante> restauranteComMesmoNome = restauranteRepository.findByNome(restauranteDetalhes.getNome());
+            if (restauranteComMesmoNome.isPresent()) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe outro restaurante cadastrado com este nome: " + restauranteDetalhes.getNome());
+            }
+        }
+
         // Atualiza os campos necessários (adicione lógica para campos nulos se for atualização parcial)
         if (restauranteDetalhes.getNome() != null) restauranteExistente.setNome(restauranteDetalhes.getNome());
         if (restauranteDetalhes.getTelefone() != null) restauranteExistente.setTelefone(restauranteDetalhes.getTelefone());
@@ -60,9 +73,8 @@ public class RestauranteServiceImpl implements RestauranteService {
 
     @Override
     public boolean findByNome(String nome) {
-        // Implemente a lógica para verificar se existe um restaurante com o nome
-        // Ex: return restauranteRepository.findByNome(nome).isPresent();
-        return false; // Retorno de exemplo
+        // Implementa a lógica para verificar se existe um restaurante com o nome
+        return restauranteRepository.findByNome(nome).isPresent();
     }
 
     @Override

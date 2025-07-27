@@ -2,7 +2,6 @@ package com.deliverytech.api.service;
 
 import com.deliverytech.api.model.Cliente;
 import com.deliverytech.api.repository.ClienteRepository; 
-import lombok.RequiredArgsConstructor; 
 
 import org.springframework.stereotype.Service; 
 
@@ -10,10 +9,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service 
-@RequiredArgsConstructor
 public class ClienteServiceImpl implements ClienteService { 
 
     private final ClienteRepository clienteRepository;
+    
+    public ClienteServiceImpl(ClienteRepository clienteRepository) {
+        this.clienteRepository = clienteRepository;
+    }
 
     @Override
     public Cliente cadastrar(Cliente cliente) {

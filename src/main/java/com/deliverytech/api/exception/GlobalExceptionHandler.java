@@ -3,6 +3,8 @@ package com.deliverytech.api.exception;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,6 +16,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+  private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponse> handleValidationExceptions(
@@ -52,21 +56,20 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(ConflictException.class)
-  public ResponseEntity<ErrorResponse> handleConflictException(
+  public ResponseEntity<Map<String, Object>> handleConflictException(
       ConflictException ex, WebRequest request) {
 
-    Map<String, String> details = new HashMap<>();
+    Map<String, Object> errorResponse = new HashMap<>();
+    errorResponse.put("timestamp", java.time.LocalDateTime.now());
+    errorResponse.put("status", HttpStatus.CONFLICT.value());
+    errorResponse.put("error", "Conflict");
+    errorResponse.put("message", ex.getMessage());
+    errorResponse.put("path", request.getDescription(false).replace("uri=", ""));
+    
     if (ex.getConflictField() != null) {
-      details.put(ex.getConflictField(), ex.getConflictValue().toString());
+      errorResponse.put("field", ex.getConflictField());
+      errorResponse.put("value", ex.getConflictValue());
     }
-
-    ErrorResponse errorResponse = new ErrorResponse(
-        HttpStatus.CONFLICT.value(),
-        "Conflito de dados",
-        ex.getMessage(),
-        request.getDescription(false).replace("uri=", ""));
-    errorResponse.setErrorCode(ex.getErrorCode());
-    errorResponse.setDetails(details.isEmpty() ? null : details);
 
     return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
   }
@@ -76,17 +79,16 @@ public class GlobalExceptionHandler {
       Exception ex, WebRequest request) {
 
     // Log completo da exceção para debug
-    System.err.println("=== GLOBALEXCEPTIONHANDLER DEBUG ===");
-    System.err.println("URL: " + request.getDescription(false));
-    System.err.println("Exceção: " + ex.getClass().getName());
-    System.err.println("Mensagem: " + ex.getMessage());
-    System.err.println("Stack trace:");
-    ex.printStackTrace();
-    System.err.println("=== FIM DEBUG ===");
+    logger.error("=== GLOBALEXCEPTIONHANDLER DEBUG ===");
+    logger.error("URL: {}", request.getDescription(false));
+    logger.error("Exceção: {}", ex.getClass().getName());
+    logger.error("Mensagem: {}", ex.getMessage());
+    logger.error("Stack trace:", ex);
+    logger.error("=== FIM DEBUG ===");
 
     // Se for o endpoint de login, vamos re-lançar a exceção para ver o erro real
     if (request.getDescription(false).contains("/auth/login")) {
-      System.err.println("Re-lançando exceção do login para debug...");
+      logger.error("Re-lançando exceção do login para debug...");
       throw new RuntimeException("Erro no login: " + ex.getMessage(), ex);
     }
     

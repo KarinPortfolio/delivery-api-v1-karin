@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 public class DataInitializer {
 
     @Bean
+   
     CommandLineRunner initData(
             ClienteRepository clienteRepository,
             RestauranteRepository restauranteRepository,
@@ -26,89 +27,80 @@ public class DataInitializer {
             if (clienteRepository.count() == 0) {
                 
                 // Inserir clientes
-                Cliente cliente1 = Cliente.builder()
-                    .nome("João Silva")
-                    .email("joao.silva@email.com")
-                    .ativo(true)
-                    .build();
+                Cliente cliente1 = new Cliente();
+                cliente1.setNome("João Silva");
+                cliente1.setEmail("joao.silva@email.com");
+                cliente1.setAtivo(true);
                 clienteRepository.save(cliente1);
 
-                Cliente cliente2 = Cliente.builder()
-                    .nome("Maria Oliveira")
-                    .email("maria.o@email.com")
-                    .ativo(true)
-                    .build();
+                Cliente cliente2 = new Cliente();
+                cliente2.setNome("Maria Oliveira");
+                cliente2.setEmail("maria.o@email.com");
+                cliente2.setAtivo(true);
                 clienteRepository.save(cliente2);
 
                 // Inserir restaurantes
-                Restaurante restaurante1 = Restaurante.builder()
-                    .nome("Pizzaria do Zé")
-                    .categoria("Pizzaria")
-                    .taxaEntrega(new BigDecimal("5.00"))
-                    .tempoEntregaMinutos(30)
-                    .telefone("11234567890")
-                    .ativo(true)
-                    .build();
+                Restaurante restaurante1 = new Restaurante();
+                restaurante1.setNome("Pizzaria do Zé");
+                restaurante1.setCategoria("Pizzaria");
+                restaurante1.setTaxaEntrega(new BigDecimal("5.00"));
+                restaurante1.setTempoEntregaMinutos(30);
+                restaurante1.setTelefone("11234567890");
+                restaurante1.setAtivo(true);
                 restauranteRepository.save(restaurante1);
 
-                Restaurante restaurante2 = Restaurante.builder()
-                    .nome("Hamburgueria Top")
-                    .categoria("Hamburgueria")
-                    .taxaEntrega(new BigDecimal("7.50"))
-                    .tempoEntregaMinutos(25)
-                    .telefone("11876543210")
-                    .ativo(true)
-                    .build();
+                Restaurante restaurante2 = new Restaurante();
+                restaurante2.setNome("Hamburgueria Top");
+                restaurante2.setCategoria("Hamburgueria");
+                restaurante2.setTaxaEntrega(new BigDecimal("7.50"));
+                restaurante2.setTempoEntregaMinutos(25);
+                restaurante2.setTelefone("11876543210");
+                restaurante2.setAtivo(true);
                 restauranteRepository.save(restaurante2);
 
                 // Inserir usuários
-                Usuario admin = Usuario.builder()
-                    .nome("Admin Sistema")
-                    .email("admin@deliverytech.com")
-                    .senha(passwordEncoder.encode("123456"))
-                    .role(Role.ADMIN)
-                    .ativo(true)
-                    .build();
+                Usuario admin = new Usuario();
+                admin.setNome("Admin Sistema");
+                admin.setEmail("admin@deliverytech.com");
+                admin.setSenha(passwordEncoder.encode("123456"));
+                admin.setRole(Role.ADMIN);
+                admin.setAtivo(true);
                 usuarioRepository.save(admin);
 
-                Usuario clienteUser = Usuario.builder()
-                    .nome("João Silva")
-                    .email("joao.silva@email.com")
-                    .senha(passwordEncoder.encode("123456"))
-                    .role(Role.CLIENTE)
-                    .ativo(true)
-                    .build();
+                Usuario clienteUser = new Usuario();
+                clienteUser.setNome("João Silva");
+                clienteUser.setEmail("joao.silva@email.com");
+                clienteUser.setSenha(passwordEncoder.encode("123456"));
+                clienteUser.setRole(Role.CLIENTE);
+                clienteUser.setAtivo(true);
                 usuarioRepository.save(clienteUser);
 
                 // Inserir produtos
-                Produto pizza1 = Produto.builder()
-                    .nome("Pizza Margherita")
-                    .categoria("Pizza")
-                    .descricao("Pizza com mussarela e manjericão")
-                    .preco(new BigDecimal("45.00"))
-                    .disponivel(true)
-                    .restaurante(restaurante1)
-                    .build();
+                Produto pizza1 = new Produto();
+                pizza1.setNome("Pizza Margherita");
+                pizza1.setCategoria("Pizza");
+                pizza1.setDescricao("Pizza com mussarela e manjericão");
+                pizza1.setPreco(new BigDecimal("45.00"));
+                pizza1.setDisponivel(true);
+                pizza1.setRestaurante(restaurante1);
                 produtoRepository.save(pizza1);
 
-                Produto pizza2 = Produto.builder()
-                    .nome("Pizza Calabresa")
-                    .categoria("Pizza")
-                    .descricao("Pizza com calabresa e cebola")
-                    .preco(new BigDecimal("50.00"))
-                    .disponivel(true)
-                    .restaurante(restaurante1)
-                    .build();
+                Produto pizza2 = new Produto();
+                pizza2.setNome("Pizza Calabresa");
+                pizza2.setCategoria("Pizza");
+                pizza2.setDescricao("Pizza com calabresa e cebola");
+                pizza2.setPreco(new BigDecimal("50.00"));
+                pizza2.setDisponivel(true);
+                pizza2.setRestaurante(restaurante1);
                 produtoRepository.save(pizza2);
 
-                Produto burger1 = Produto.builder()
-                    .nome("X-Burger Clássico")
-                    .categoria("Hamburguer")
-                    .descricao("Hamburguer com queijo, alface e tomate")
-                    .preco(new BigDecimal("25.00"))
-                    .disponivel(true)
-                    .restaurante(restaurante2)
-                    .build();
+                Produto burger1 = new Produto();
+                burger1.setNome("X-Burger Clássico");
+                burger1.setCategoria("Hamburguer");
+                burger1.setDescricao("Hamburguer com queijo, alface e tomate");
+                burger1.setPreco(new BigDecimal("25.00"));
+                burger1.setDisponivel(true);
+                burger1.setRestaurante(restaurante2);
                 produtoRepository.save(burger1);
 
             }

@@ -2,17 +2,19 @@ package com.deliverytech.api.service;
 
 import com.deliverytech.api.model.Produto;
 import com.deliverytech.api.repository.ProdutoRepository; 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service 
-@RequiredArgsConstructor
 public class ProdutoServiceImpl implements ProdutoService {
 
     private final ProdutoRepository produtoRepository; 
+    
+    public ProdutoServiceImpl(ProdutoRepository produtoRepository) {
+        this.produtoRepository = produtoRepository;
+    } 
     @Override
     public Produto cadastrar(Produto produto) {
         return produtoRepository.save(produto);

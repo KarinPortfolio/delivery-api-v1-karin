@@ -3,18 +3,19 @@ package com.deliverytech.api.service;
 import com.deliverytech.api.model.Pedido;
 import com.deliverytech.api.model.StatusPedido;
 import com.deliverytech.api.repository.PedidoRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
-
 public class PedidoServiceImpl implements PedidoService { 
 
     private final PedidoRepository pedidoRepository;
+    
+    public PedidoServiceImpl(PedidoRepository pedidoRepository) {
+        this.pedidoRepository = pedidoRepository;
+    }
 
     @Override
     public Pedido criar(Pedido pedido) {
