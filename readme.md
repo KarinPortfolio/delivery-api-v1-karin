@@ -11,96 +11,196 @@ Sistema de delivery desenvolvido com Spring Boot e Java 21.
 # Estrutura das pastas
 
 ```
-./
-│   mvnw
-│   mvnw.cmd
-│   pom.xml
-│   readme.md
-│
-├───src
-    ├───main
-    │   ├───java
-    │   │   └───com
-    │   │       └───deliverytech
-    │   │           │   DeliveryTechApplication.java
-    │   │           │
-    │   │           ├───config
-    │   │           │       SecurityConfig.java
-    │   │           │
-    │   │           ├───controller
-    │   │           │       AuthController.java
-    │   │           │       ClienteController.java
-    │   │           │       PedidoController.java
-    │   │           │       ProdutoController.java
-    │   │           │       RestauranteController.java
-    │   │           │
-    │   │           ├───dto
-    │   │           │   ├───request
-    │   │           │   │       ClienteRequest.java
-    │   │           │   │       ItemPedidoRequest.java
-    │   │           │   │       LoginRequest.java
-    │   │           │   │       PedidoRequest.java
-    │   │           │   │       ProdutoRequest.java
-    │   │           │   │       RegisterRequest.java
-    │   │           │   │       RestauranteRequest.java
-    │   │           │   │
-    │   │           │   └───response
-    │   │           │           ClienteResponse.java
-    │   │           │           ItemPedidoResponse.java
-    │   │           │           PedidoResponse.java
-    │   │           │           ProdutoResponse.java
-    │   │           │           RestauranteResponse.java
-    │   │           │
-    │   │           ├───model
-    │   │           │       Cliente.java
-    │   │           │       Endereco.java
-    │   │           │       ItemPedido.java
-    │   │           │       Pedido.java
-    │   │           │       Produto.java
-    │   │           │       Restaurante.java
-    │   │           │       Role.java
-    │   │           │       StatusPedido.java
-    │   │           │       Usuario.java
-    │   │           │
-    │   │           ├───repository
-    │   │           │       ClienteRepository.java
-    │   │           │       PedidoRepository.java
-    │   │           │       ProdutoRepository.java
-    │   │           │       RestauranteRepository.java
-    │   │           │       UsuarioRepository.java
-    │   │           │
-    │   │           ├───security
-    │   │           │       JwtAuthenticationFilter.java
-    │   │           │       JwtUtil.java
-    │   │           │       UsuarioDetailsServiceImpl.java
-    │   │           │
-    │   │           └───service
-    │   │               │   ClienteService.java
-    │   │               │   PedidoService.java
-    │   │               │   ProdutoService.java
-    │   │               │   RestauranteService.java
-    │   │               │
-    │   │               └───impl
-    │   │                       ClienteServiceImpl.java
-    │   │                       PedidoServiceImpl.java
-    │   │                       ProdutoServiceImpl.java
-    │   │                       RestauranteServiceImpl.java
-    │   │
-    │   └───resources
-    │       │   application.properties
-    │       │
-    │       ├───static
-    │       │       index.html
-    │       │
-    │       └───templates
-    └───test
-        └───java
-            └───com
-                └───deliverytech
-                    └───delivery
-                            DeliveryApiApplicationTests.java
-
-
+.
+├── Dockerfile
+├── docker-compose.yml
+├── mvnw
+├── mvnw.cmd
+├── pom.xml
+├── readme.md
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── com
+    │   │       └── deliverytech
+    │   │           └── api
+    │   │               ├── ApiApplication.java
+    │   │               ├── config
+    │   │               │   ├── CorsConfig.java
+    │   │               │   ├── DataInitializer.java
+    │   │               │   ├── MetricsConfig.java
+    │   │               │   ├── OpenApiConfig.java
+    │   │               │   ├── SecurityConfig.java
+    │   │               │   └── SwaggerConfig.java
+    │   │               ├── controller
+    │   │               │   ├── AuthController.java
+    │   │               │   ├── AuthController_Clean.java
+    │   │               │   ├── AuthController_old.java
+    │   │               │   ├── ClienteController.java
+    │   │               │   ├── ClienteController_Clean.java
+    │   │               │   ├── EntregaController.java
+    │   │               │   ├── EntregadorController.java
+    │   │               │   ├── EntregadorController_clean.java
+    │   │               │   ├── MinimalController.java
+    │   │               │   ├── PedidoController.java
+    │   │               │   ├── ProdutoController.java
+    │   │               │   ├── RestauranteController.java
+    │   │               │   ├── TestController.java
+    │   │               │   └── UsuarioController.java
+    │   │               ├── dto
+    │   │               │   ├── request
+    │   │               │   │   ├── AtualizarStatusPedidoRequest.java
+    │   │               │   │   ├── ClienteRequest.java
+    │   │               │   │   ├── ItemPedidoRequest.java
+    │   │               │   │   ├── LoginRequest.java
+    │   │               │   │   ├── PedidoRequest.java
+    │   │               │   │   ├── ProdutoExemploRequest.java
+    │   │               │   │   ├── ProdutoRequest.java
+    │   │               │   │   ├── RegisterRequest.java
+    │   │               │   │   ├── RestauranteRequest.java
+    │   │               │   │   └── UsuarioRequest.java
+    │   │               │   └── response
+    │   │               │       ├── ApiResponse.java
+    │   │               │       ├── ClienteResponse.java
+    │   │               │       ├── ItemPedidoResponse.java
+    │   │               │       ├── PedidoResponse.java
+    │   │               │       ├── ProdutoResponse.java
+    │   │               │       ├── RestauranteResponse.java
+    │   │               │       └── UsuarioResponse.java
+    │   │               ├── exception
+    │   │               │   ├── BusinessException.java
+    │   │               │   ├── ConflictException.java
+    │   │               │   ├── EntityNotFoundException.java
+    │   │               │   ├── ErrorResponse.java
+    │   │               │   └── GlobalExceptionHandler.java
+    │   │               ├── model
+    │   │               │   ├── Cliente.java
+    │   │               │   ├── Endereco.java
+    │   │               │   ├── Entrega.java
+    │   │               │   ├── Entregador.java
+    │   │               │   ├── ItemPedido.java
+    │   │               │   ├── Pedido.java
+    │   │               │   ├── Produto.java
+    │   │               │   ├── Restaurante.java
+    │   │               │   ├── Role.java
+    │   │               │   ├── StatusEntrega.java
+    │   │               │   ├── StatusEntregaCheck.java
+    │   │               │   ├── StatusPedido.java
+    │   │               │   └── Usuario.java
+    │   │               ├── repository
+    │   │               │   ├── ClienteRepository.java
+    │   │               │   ├── EntregaRepository.java
+    │   │               │   ├── EntregadorRepository.java
+    │   │               │   ├── PedidoRepository.java
+    │   │               │   ├── ProdutoRepository.java
+    │   │               │   ├── RestauranteRepository.java
+    │   │               │   └── UsuarioRepository.java
+    │   │               ├── security
+    │   │               │   ├── JwtAuthenticationFilter.java
+    │   │               │   ├── JwtUtil.java
+    │   │               │   ├── KeyGenerator.java
+    │   │               │   ├── PasswordEncoderGenerator.java
+    │   │               │   └── UsuarioDetailsServiceImpl.java
+    │   │               └── service
+    │   │                   ├── ClienteService.java
+    │   │                   ├── ClienteServiceImpl.java
+    │   │                   ├── CustomUserDetailsService.java
+    │   │                   ├── PedidoService.java
+    │   │                   ├── PedidoServiceImpl.java
+    │   │                   ├── ProdutoService.java
+    │   │                   ├── ProdutoServiceImpl.java
+    │   │                   ├── RestauranteService.java
+    │   │                   ├── RestauranteServiceImpl.java
+    │   │                   └── UsuarioService.java
+    │   └── resources
+    │       ├── application-dev.properties
+    │       ├── application-minimal.properties
+    │       ├── application-swagger-test.properties
+    │       ├── application-test.properties
+    │       ├── application.properties
+    │       ├── data.sql
+    │       ├── schema.sql
+    │       ├── static
+    │       └── templates
+    └── test
+        ├── java
+        │   └── com
+        │       └── deliverytech
+        │           └── api
+        │               ├── ApiApplicationTests.java
+        │               ├── config
+        │               │   └── SwaggerTestSecurityConfig.java
+        │               ├── controller
+        │               │   ├── AuthControllerIntegrationTest.java
+        │               │   ├── AuthControllerTest.java
+        │               │   ├── ClienteControllerTest.java
+        │               │   ├── EntregaControllerTest.java
+        │               │   ├── EntregadorControllerTest.java
+        │               │   ├── PedidoControllerTest.java
+        │               │   ├── ProdutoControllerTest.java
+        │               │   ├── ProdutoControllerTestNew.java
+        │               │   ├── RestauranteControllerTest.java
+        │               │   ├── RestauranteControllerTestSimples.java
+        │               │   ├── RestauranteControllerTestUnitario.java
+        │               │   ├── UsuarioControllerSimpleTest.java
+        │               │   ├── UsuarioControllerTest.java
+        │               │   └── UsuarioControllerUnitTest.java
+        │               ├── dto
+        │               │   ├── request
+        │               │   │   ├── ClienteRequestTest.java
+        │               │   │   ├── LoginRequestTest.java
+        │               │   │   ├── ProdutoRequestTest.java
+        │               │   │   └── RegisterRequestTest.java
+        │               │   └── response
+        │               │       ├── ApiResponseTest.java
+        │               │       ├── ClienteResponseTest.java
+        │               │       ├── ItemPedidoResponseTest.java
+        │               │       ├── PedidoResponseTest.java
+        │               │       ├── ProdutoResponseTest.java
+        │               │       ├── RestauranteResponseTest.java
+        │               │       └── UsuarioResponseTest.java
+        │               ├── exception
+        │               │   ├── BusinessExceptionTest.java
+        │               │   ├── ConflictExceptionTest.java
+        │               │   ├── EntityNotFoundExceptionTest.java
+        │               │   ├── ErrorResponseTest.java
+        │               │   └── GlobalExceptionHandlerTest.java
+        │               ├── model
+        │               │   ├── ClienteTest.java
+        │               │   ├── EnderecoTest.java
+        │               │   ├── EntregaTest.java
+        │               │   ├── EntregadorTest.java
+        │               │   ├── ItemPedidoTest.java
+        │               │   ├── PedidoTest.java
+        │               │   ├── ProdutoTest.java
+        │               │   ├── RestauranteTest.java
+        │               │   ├── RoleTest.java
+        │               │   ├── StatusEntregaTest.java
+        │               │   ├── StatusPedidoTest.java
+        │               │   └── UsuarioTest.java
+        │               ├── repository
+        │               │   ├── ClienteRepositoryTest.java
+        │               │   ├── EntregaRepositoryTest.java
+        │               │   ├── EntregadorRepositoryTest.java
+        │               │   ├── PedidoRepositoryTest.java
+        │               │   ├── ProdutoRepositoryTest.java
+        │               │   ├── RestauranteRepositoryTest.java
+        │               │   └── UsuarioRepositoryTest.java
+        │               ├── security
+        │               │   ├── JwtAuthenticationFilterTest.java
+        │               │   ├── JwtUtilTest.java
+        │               │   └── UsuarioDetailsServiceImplTest.java
+        │               ├── service
+        │               │   ├── ClienteServiceImplTest.java
+        │               │   ├── CustomUserDetailsServiceTest.java
+        │               │   ├── PedidoSerivceImplTest.java
+        │               │   ├── ProdutoServiceImplTest.java
+        │               │   ├── RestauranteServiceImplTest.java
+        │               │   └── UsuarioServiceTest.java
+        │               └── test
+        │                   └── StatusEntregaDebug.java
+        └── resources
+            └── application-test.properties
 ```
 
 ## 🚀 Tecnologias
@@ -111,6 +211,7 @@ Sistema de delivery desenvolvido com Spring Boot e Java 21.
 - Spring Data JPA
 - H2 Database
 - Maven
+- Jmeter
 
 ## ⚡Recursos Modernos Utilizados
 
