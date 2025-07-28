@@ -4,9 +4,11 @@ import com.deliverytech.api.model.Endereco;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import jakarta.annotation.Generated;
+
 
 public class PedidoRequest {
-
+@Generated(value = "PedidoRequest.class")
     @NotNull
     private Long clienteId;
 

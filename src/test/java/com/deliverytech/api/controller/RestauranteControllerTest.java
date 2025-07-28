@@ -45,7 +45,9 @@ class RestauranteControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(restauranteController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(restauranteController)
+                .setControllerAdvice(new com.deliverytech.api.exception.GlobalExceptionHandler())
+                .build();
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

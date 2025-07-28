@@ -24,11 +24,13 @@ import com.deliverytech.api.service.ProdutoService;
 import com.deliverytech.api.service.RestauranteService;
 
 import jakarta.validation.Valid;
+import jakarta.annotation.Generated;
+
 
 @RestController
 @RequestMapping("/api/v1/produtos")
 public class ProdutoController {
-
+@Generated(value = "ProdutoController.class")
     private final ProdutoService produtoService;
     private final RestauranteService restauranteService;
 

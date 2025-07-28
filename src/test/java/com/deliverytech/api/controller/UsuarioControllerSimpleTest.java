@@ -173,7 +173,6 @@ class UsuarioControllerSimpleTest {
         
         Usuario usuarioAtualizado = criarUsuarioMock(1L, "Admin Atualizado", "admin@test.com", Role.ADMIN, true);
 
-        when(usuarioService.buscarUsuarioPorId(1L)).thenReturn(Optional.of(usuarioExistente));
         when(usuarioService.atualizarUsuario(eq(1L), any(Usuario.class))).thenReturn(usuarioAtualizado);
 
         // When & Then
@@ -190,7 +189,6 @@ class UsuarioControllerSimpleTest {
     void deveDeletarUsuarioComSucesso() throws Exception {
         // Given - Usando usuário do array mock
         Usuario usuario = usuariosMock[0];
-        when(usuarioService.buscarUsuarioPorId(1L)).thenReturn(Optional.of(usuario));
         doNothing().when(usuarioService).deletarUsuario(1L);
 
         // When & Then

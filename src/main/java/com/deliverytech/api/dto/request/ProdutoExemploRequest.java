@@ -6,10 +6,12 @@ import jakarta.validation.constraints.Size;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import jakarta.annotation.Generated;
+
 
 @Schema(description = "Dados para criar um novo produto")
 public class ProdutoExemploRequest {
-
+@Generated(value = "ProdutoExemploRequest.class")
     @Schema(description = "Nome do produto", example = "Pizza Margherita", required = true)
     @NotBlank(message = "Nome é obrigatório")
     @Size(min = 2, max = 100, message = "Nome deve ter entre 2 e 100 caracteres")

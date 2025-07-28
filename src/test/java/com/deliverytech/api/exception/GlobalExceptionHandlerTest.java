@@ -46,10 +46,12 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(400, response.getBody().getStatus());
-        assertEquals("Erro de validação nos dados enviados", response.getBody().getMessage());
-        assertNotNull(response.getBody().getTimestamp());
-        assertNotNull(response.getBody().getPath());
+        ErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(400, body.getStatus());
+        assertEquals("Erro de validação nos dados enviados", body.getMessage());
+        assertNotNull(body.getTimestamp());
+        assertNotNull(body.getPath());
     }
 
     @Test
@@ -63,11 +65,13 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(404, response.getBody().getStatus());
-        assertTrue(response.getBody().getMessage().contains("Usuario"));
-        assertTrue(response.getBody().getMessage().contains("1"));
-        assertNotNull(response.getBody().getTimestamp());
-        assertNotNull(response.getBody().getPath());
+        ErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(404, body.getStatus());
+        assertTrue(body.getMessage().contains("Usuario"));
+        assertTrue(body.getMessage().contains("1"));
+        assertNotNull(body.getTimestamp());
+        assertNotNull(body.getPath());
     }
 
     @Test
@@ -81,10 +85,12 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(409, response.getBody().get("status"));
-        assertEquals("Email já existe", response.getBody().get("message"));
-        assertNotNull(response.getBody().get("timestamp"));
-        assertNotNull(response.getBody().get("path"));
+        Map<String, Object> body = response.getBody();
+        assertNotNull(body);
+        assertEquals(409, body.get("status"));
+        assertEquals("Email já existe", body.get("message"));
+        assertNotNull(body.get("timestamp"));
+        assertNotNull(body.get("path"));
     }
 
     @Test
@@ -93,11 +99,19 @@ class GlobalExceptionHandlerTest {
         RuntimeException ex = new RuntimeException("Erro interno");
         when(webRequest.getDescription(false)).thenReturn("uri=/api/usuarios");
 
-        // When & Then
-        // O método handleGenericException vai relançar a exceção
-        assertThrows(RuntimeException.class, () -> {
-            globalExceptionHandler.handleGenericException(ex, webRequest);
-        });
+        // When
+        ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleGenericException(ex, webRequest);
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNotNull(response.getBody());
+        ErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(500, body.getStatus());
+        assertEquals("Erro interno do servidor", body.getError());
+        assertEquals("Ocorreu um erro inesperado. Tente novamente mais tarde.", body.getMessage());
+        assertNotNull(body.getTimestamp());
+        assertNotNull(body.getPath());
     }
 
     @Test
@@ -106,10 +120,19 @@ class GlobalExceptionHandlerTest {
         RuntimeException ex = new RuntimeException("Erro interno");
         when(webRequest.getDescription(false)).thenReturn("uri=/api/usuarios");
 
-        // When & Then
-        assertThrows(RuntimeException.class, () -> {
-            globalExceptionHandler.handleGenericException(ex, webRequest);
-        });
+        // When
+        ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleGenericException(ex, webRequest);
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNotNull(response.getBody());
+        ErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(500, body.getStatus());
+        assertEquals("Ocorreu um erro inesperado. Tente novamente mais tarde.", body.getMessage());
+        assertNull(body.getDetails());
+        assertNotNull(body.getTimestamp());
+        assertNotNull(body.getPath());
     }
 
     @Test
@@ -127,8 +150,10 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(400, response.getBody().getStatus());
-        assertEquals("Erro de validação nos dados enviados", response.getBody().getMessage());
+        ErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(400, body.getStatus());
+        assertEquals("Erro de validação nos dados enviados", body.getMessage());
     }
 
     @Test
@@ -142,10 +167,12 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(404, response.getBody().getStatus());
-        assertNotNull(response.getBody().getMessage());
-        assertNotNull(response.getBody().getTimestamp());
-        assertNotNull(response.getBody().getPath());
+        ErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(404, body.getStatus());
+        assertNotNull(body.getMessage());
+        assertNotNull(body.getTimestamp());
+        assertNotNull(body.getPath());
     }
 
     @Test
@@ -159,9 +186,11 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(409, response.getBody().get("status"));
-        assertNotNull(response.getBody().get("timestamp"));
-        assertNotNull(response.getBody().get("path"));
+        Map<String, Object> body = response.getBody();
+        assertNotNull(body);
+        assertEquals(409, body.get("status"));
+        assertNotNull(body.get("timestamp"));
+        assertNotNull(body.get("path"));
     }
 
     @Test
@@ -183,10 +212,12 @@ class GlobalExceptionHandlerTest {
         // Then
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(400, response.getBody().getStatus());
-        assertEquals("Erro de validação nos dados enviados", response.getBody().getMessage());
-        assertNotNull(response.getBody().getTimestamp());
-        assertNotNull(response.getBody().getPath());
+        ErrorResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(400, body.getStatus());
+        assertEquals("Erro de validação nos dados enviados", body.getMessage());
+        assertNotNull(body.getTimestamp());
+        assertNotNull(body.getPath());
     }
 
     @Test
@@ -204,8 +235,11 @@ class GlobalExceptionHandlerTest {
             // Then
             assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
             assertNotNull(response.getBody());
-            assertTrue(response.getBody().getMessage().contains(entidades[i]));
-            assertTrue(response.getBody().getMessage().contains(ids[i].toString()));
+            ErrorResponse body = response.getBody();
+            assertNotNull(body);
+            assertNotNull(body);
+            assertTrue(body.getMessage().contains(entidades[i]));
+            assertTrue(body.getMessage().contains(ids[i].toString()));
         }
     }
 }

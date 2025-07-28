@@ -2,9 +2,11 @@ package com.deliverytech.api.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.annotation.Generated;
+
 
 public class ItemPedidoRequest {
-
+@Generated(value = "ItemPedidoRequest.class")
     @NotNull
     private Long produtoId;
 

@@ -29,11 +29,13 @@ import com.deliverytech.api.service.ProdutoService;
 import com.deliverytech.api.service.RestauranteService;
 
 import jakarta.validation.Valid;
+import jakarta.annotation.Generated;
+
 
 @RestController
 @RequestMapping("/api/v1/pedidos")
 public class PedidoController {
-
+@Generated(value = "PedidoController.class")
     private final PedidoService pedidoService;
     private final ClienteService clienteService;
     private final RestauranteService restauranteService;

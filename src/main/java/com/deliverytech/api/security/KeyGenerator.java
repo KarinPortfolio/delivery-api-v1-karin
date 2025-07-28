@@ -3,7 +3,9 @@ package com.deliverytech.api.security;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Base64;
+import jakarta.annotation.Generated;
 
+@Generated(value = "KeyGenerator.class")
 public class KeyGenerator {
 
     public static void main(String[] args) {

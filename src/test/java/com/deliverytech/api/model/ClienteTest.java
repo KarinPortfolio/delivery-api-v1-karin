@@ -132,9 +132,10 @@ class ClienteTest {
     @DisplayName("Deve verificar a igualdade entre objetos Cliente")
     void deveVerificarIgualdadeDeObjetos() {
         // Arrange
-        Cliente cliente1 = new Cliente(1L, "Test", "test@example.com", true, LocalDateTime.now());
-        Cliente cliente2 = new Cliente(1L, "Test", "test@example.com", true, LocalDateTime.now());
-        Cliente cliente3 = new Cliente(2L, "Test", "test@example.com", true, LocalDateTime.now()); // ID diferente
+        LocalDateTime now = LocalDateTime.now();
+        Cliente cliente1 = new Cliente(1L, "Test", "test@example.com", true, now);
+        Cliente cliente2 = new Cliente(1L, "Test", "test@example.com", true, now);
+        Cliente cliente3 = new Cliente(2L, "Test", "test@example.com", true, now); // ID diferente
 
         // Assert (Lombok @Data gera equals e hashCode baseados em todos os campos por padrão)
         assertEquals(cliente1, cliente2, "Clientes com mesmos valores devem ser iguais");
@@ -145,8 +146,9 @@ class ClienteTest {
     @DisplayName("Deve verificar o hashcode de objetos Cliente")
     void deveVerificarHashCodeDeObjetos() {
         // Arrange
-        Cliente cliente1 = new Cliente(1L, "Test", "test@example.com", true, LocalDateTime.now());
-        Cliente cliente2 = new Cliente(1L, "Test", "test@example.com", true, LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        Cliente cliente1 = new Cliente(1L, "Test", "test@example.com", true, now);
+        Cliente cliente2 = new Cliente(1L, "Test", "test@example.com", true, now);
 
         // Assert
         assertEquals(cliente1.hashCode(), cliente2.hashCode(), "Hashcodes de clientes iguais devem ser iguais");
