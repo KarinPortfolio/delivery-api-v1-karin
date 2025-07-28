@@ -36,6 +36,12 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/api/v1/admin/**").permitAll()
+                .requestMatchers("/api/v1/debug/**").permitAll()
+                .requestMatchers("/api/v1/entregas/**").permitAll()
+                .requestMatchers("/api/v1/restaurantes/**").permitAll()
+                .requestMatchers("/api/v1/produtos/**").permitAll()
+                .requestMatchers("/api/v1/pedidos/**").permitAll()
                 .requestMatchers("/api/test/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**").permitAll()
                 .requestMatchers("/api-docs/**", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()

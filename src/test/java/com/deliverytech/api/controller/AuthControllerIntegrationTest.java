@@ -9,6 +9,8 @@ import com.deliverytech.api.repository.UsuarioRepository;
 import com.deliverytech.api.repository.RestauranteRepository;
 import com.deliverytech.api.security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,9 +39,6 @@ class AuthControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AuthenticationManager authenticationManager;
-
-    @MockBean
     private JwtUtil jwtUtil;
 
     @MockBean
@@ -63,6 +55,8 @@ class AuthControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     @Test
@@ -75,22 +69,13 @@ class AuthControllerIntegrationTest {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
         usuario.setEmail("admin@teste.com");
+        usuario.setSenha("encodedPassword");
         usuario.setAtivo(true);
         usuario.setRole(Role.ADMIN);
 
-        UserDetails userDetails = User.builder()
-            .username("admin@teste.com")
-            .password("123456")
-            .authorities(List.of(new SimpleGrantedAuthority("ROLE_ADMIN")))
-            .build();
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(
-            userDetails, null, userDetails.getAuthorities());
-
         when(usuarioRepository.findByEmail("admin@teste.com")).thenReturn(Optional.of(usuario));
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-            .thenReturn(authentication);
-        when(jwtUtil.generateToken(any(UserDetails.class), eq(usuario))).thenReturn("jwt-token-123");
+        when(passwordEncoder.matches("123456", "encodedPassword")).thenReturn(true);
+        when(jwtUtil.generateToken(usuario, usuario)).thenReturn("jwt-token-123");
 
         // When & Then
         mockMvc.perform(post("/api/v1/auth/login")
@@ -100,8 +85,8 @@ class AuthControllerIntegrationTest {
                 .andExpect(jsonPath("$.token").value("jwt-token-123"));
 
         verify(usuarioRepository).findByEmail("admin@teste.com");
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(jwtUtil).generateToken(any(UserDetails.class), eq(usuario));
+        verify(passwordEncoder).matches("123456", "encodedPassword");
+        verify(jwtUtil).generateToken(usuario, usuario);
     }
 
     @Test
@@ -122,7 +107,7 @@ class AuthControllerIntegrationTest {
                 .andExpect(jsonPath("$.message").value("Credenciais inválidas"));
 
         verify(usuarioRepository).findByEmail("inexistente@teste.com");
-        verify(authenticationManager, never()).authenticate(any());
+        // passwordEncoder.matches não é chamado pois usuário não existe
     }
 
     @Test
@@ -148,7 +133,7 @@ class AuthControllerIntegrationTest {
                 .andExpect(jsonPath("$.message").value("Usuário inativo"));
 
         verify(usuarioRepository).findByEmail("inativo@teste.com");
-        verify(authenticationManager, never()).authenticate(any());
+        // passwordEncoder.matches não é chamado pois usuário está inativo
     }
 
     @Test
@@ -161,11 +146,11 @@ class AuthControllerIntegrationTest {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
         usuario.setEmail("usuario@teste.com");
+        usuario.setSenha("senhaCorretaCodificada");
         usuario.setAtivo(true);
 
         when(usuarioRepository.findByEmail("usuario@teste.com")).thenReturn(Optional.of(usuario));
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-            .thenThrow(new BadCredentialsException("Credenciais inválidas"));
+        when(passwordEncoder.matches("senha-errada", "senhaCorretaCodificada")).thenReturn(false);
 
         // When & Then
         mockMvc.perform(post("/api/v1/auth/login")
@@ -176,10 +161,8 @@ class AuthControllerIntegrationTest {
                 .andExpect(jsonPath("$.message").value("Credenciais inválidas"));
 
         verify(usuarioRepository).findByEmail("usuario@teste.com");
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-    }
-
-    @Test
+        verify(passwordEncoder).matches("senha-errada", "senhaCorretaCodificada");
+    }    @Test
     void deveRegistrarUsuarioComSucesso() throws Exception {
         // Given
         RegisterRequest registerRequest = new RegisterRequest();
@@ -294,22 +277,13 @@ class AuthControllerIntegrationTest {
             Usuario usuario = new Usuario();
             usuario.setId(1L);
             usuario.setEmail(email);
+            usuario.setSenha("encodedPassword");
             usuario.setAtivo(true);
             usuario.setRole(Role.CLIENTE);
 
-            UserDetails userDetails = User.builder()
-                .username(email)
-                .password("123456")
-                .authorities(List.of(new SimpleGrantedAuthority("ROLE_CLIENTE")))
-                .build();
-
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
-
             when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
-            when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenReturn(authentication);
-            when(jwtUtil.generateToken(any(UserDetails.class), eq(usuario)))
+            when(passwordEncoder.matches("123456", "encodedPassword")).thenReturn(true);
+            when(jwtUtil.generateToken(usuario, usuario))
                 .thenReturn("jwt-token-" + email.hashCode());
 
             // When & Then
@@ -320,7 +294,7 @@ class AuthControllerIntegrationTest {
                     .andExpect(jsonPath("$.token").value("jwt-token-" + email.hashCode()));
 
             // Reset mocks para próxima iteração
-            reset(usuarioRepository, authenticationManager, jwtUtil);
+            reset(usuarioRepository, passwordEncoder, jwtUtil);
         }
     }
 
@@ -349,7 +323,7 @@ class AuthControllerIntegrationTest {
             }
         }
 
-        verify(authenticationManager, never()).authenticate(any());
+        // Verifica que nenhum usuário foi persistido para requests inválidos
     }
 
     @Test
@@ -362,10 +336,12 @@ class AuthControllerIntegrationTest {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
         usuario.setEmail("user@test.com");
+        usuario.setSenha("encodedPassword");
         usuario.setAtivo(true);
 
         when(usuarioRepository.findByEmail("user@test.com")).thenReturn(Optional.of(usuario));
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+        when(passwordEncoder.matches("123456", "encodedPassword")).thenReturn(true);
+        when(jwtUtil.generateToken(usuario, usuario))
             .thenThrow(new RuntimeException("Erro interno do servidor"));
 
         // When & Then

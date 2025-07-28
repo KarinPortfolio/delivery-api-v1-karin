@@ -1,29 +1,52 @@
 package com.deliverytech.api.controller;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.deliverytech.api.config.SwaggerTestSecurityConfig;
+import java.util.Arrays;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Import(SwaggerTestSecurityConfig.class)
-@ActiveProfiles("test")
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import com.deliverytech.api.service.PedidoService;
+import com.deliverytech.api.exception.GlobalExceptionHandler;
+
+@ExtendWith(MockitoExtension.class)
 class PedidoControllerTest {
 
-    @Autowired
+    @Mock
+    private PedidoService pedidoService;
+
+    @InjectMocks
+    private PedidoController pedidoController;
+
     private MockMvc mockMvc;
+
+    @BeforeEach
+    void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(pedidoController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
+    }
 
     @Test
     void deveListarPedidos() throws Exception {
-        mockMvc.perform(get("/api/v1/pedidos"))
+        // Arrange
+        when(pedidoService.listarTodos()).thenReturn(Arrays.asList());
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/pedidos")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+        
+        verify(pedidoService).listarTodos();
     }
 }

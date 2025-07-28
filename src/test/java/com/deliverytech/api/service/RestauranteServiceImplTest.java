@@ -33,12 +33,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.deliverytech.api.model.Restaurante;
 import com.deliverytech.api.repository.RestauranteRepository;
+import com.deliverytech.api.repository.ProdutoRepository;
 
 @ExtendWith(MockitoExtension.class)
 class RestauranteServiceImplTest {
 
     @Mock
     private RestauranteRepository restauranteRepository;
+
+    @Mock
+    private ProdutoRepository produtoRepository;
 
     @InjectMocks
     private RestauranteServiceImpl restauranteService;
@@ -354,6 +358,7 @@ class RestauranteServiceImplTest {
     void deveDeletarRestauranteExistente() {
         // Arrange
         when(restauranteRepository.existsById(1L)).thenReturn(true);
+        when(produtoRepository.findByRestauranteId(1L)).thenReturn(Collections.emptyList());
         doNothing().when(restauranteRepository).deleteById(1L);
 
         // Act & Assert
@@ -361,6 +366,7 @@ class RestauranteServiceImplTest {
 
         // Assert
         verify(restauranteRepository, times(1)).existsById(1L);
+        verify(produtoRepository, times(1)).findByRestauranteId(1L);
         verify(restauranteRepository, times(1)).deleteById(1L);
     }
 

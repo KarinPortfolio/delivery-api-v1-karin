@@ -1,7 +1,10 @@
 // src/main/java/com/deliverytech/api/service/RestauranteServiceImpl.java (Implementação)
 package com.deliverytech.api.service;
 
+import com.deliverytech.api.exception.ConflictException;
+import com.deliverytech.api.model.Produto;
 import com.deliverytech.api.model.Restaurante;
+import com.deliverytech.api.repository.ProdutoRepository;
 import com.deliverytech.api.repository.RestauranteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; // Importe se usar transações
@@ -15,9 +18,11 @@ import java.util.Optional;
 public class RestauranteServiceImpl implements RestauranteService {
 
     private final RestauranteRepository restauranteRepository;
+    private final ProdutoRepository produtoRepository;
     
-    public RestauranteServiceImpl(RestauranteRepository restauranteRepository) {
+    public RestauranteServiceImpl(RestauranteRepository restauranteRepository, ProdutoRepository produtoRepository) {
         this.restauranteRepository = restauranteRepository;
+        this.produtoRepository = produtoRepository;
     }
 
     @Override
@@ -78,11 +83,23 @@ public class RestauranteServiceImpl implements RestauranteService {
     }
 
     @Override
-    @Transactional // <--- Adicione @Transactional para operações de escrita
-    public void deletar(Long id) { // <--- NOVO MÉTODO: Implementação do método deletar
+    @Transactional
+    public void deletar(Long id) {
         if (!restauranteRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Restaurante não encontrado com ID: " + id);
         }
+        
+        // Verificar se existem produtos associados ao restaurante
+        List<Produto> produtosAssociados = produtoRepository.findByRestauranteId(id);
+        if (!produtosAssociados.isEmpty()) {
+            throw new ConflictException(
+                "Não é possível deletar o restaurante pois existem " + produtosAssociados.size() + 
+                " produto(s) associado(s). Remova os produtos primeiro.",
+                "restauranteId", 
+                String.valueOf(id)
+            );
+        }
+        
         restauranteRepository.deleteById(id);
     }
 }

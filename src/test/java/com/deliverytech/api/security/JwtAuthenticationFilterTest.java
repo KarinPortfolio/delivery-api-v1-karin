@@ -88,7 +88,6 @@ class JwtAuthenticationFilterTest {
         when(request.getHeader("Authorization")).thenReturn(authHeader);
         when(jwtUtil.extractUsername(token)).thenReturn(email);
         when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
-        when(userDetails.getUsername()).thenReturn(email);
         when(jwtUtil.isTokenValid(token, userDetails)).thenReturn(true);
 
         // When
@@ -129,7 +128,6 @@ class JwtAuthenticationFilterTest {
         when(request.getHeader("Authorization")).thenReturn(authHeader);
         when(jwtUtil.extractUsername(token)).thenReturn(email);
         when(userDetailsService.loadUserByUsername(email)).thenReturn(userDetails);
-        when(userDetails.getUsername()).thenReturn(email);
         when(jwtUtil.isTokenValid(token, userDetails)).thenReturn(false);
 
         // When

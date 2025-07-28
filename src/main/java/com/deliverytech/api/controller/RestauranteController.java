@@ -61,6 +61,15 @@ public class RestauranteController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/categoria/{categoria}")
+    public ResponseEntity<List<RestauranteResponse>> buscarPorCategoria(@PathVariable String categoria) {
+        List<Restaurante> restaurantes = restauranteService.buscarPorCategoria(categoria);
+        List<RestauranteResponse> responses = restaurantes.stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(responses);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<RestauranteResponse> buscarPorId(@PathVariable Long id) {
         Optional<Restaurante> restauranteOpt = restauranteService.buscarPorId(id);

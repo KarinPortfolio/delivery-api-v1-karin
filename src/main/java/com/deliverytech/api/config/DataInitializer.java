@@ -23,8 +23,30 @@ public class DataInitializer {
             PasswordEncoder passwordEncoder) {
         
         return args -> {
-            // Só adiciona dados se o banco estiver vazio
-            if (clienteRepository.count() == 0) {
+            System.out.println("=== INICIANDO DataInitializer ===");
+            
+            // Garantir que o usuário admin sempre existe
+            if (usuarioRepository.findByEmail("admin@deliverytech.com").isEmpty()) {
+                System.out.println("Criando usuário admin...");
+                Usuario admin = new Usuario();
+                admin.setNome("Admin Sistema");
+                admin.setEmail("admin@deliverytech.com");
+                admin.setSenha(passwordEncoder.encode("123456"));
+                admin.setRole(Role.ADMIN);
+                admin.setAtivo(true);
+                Usuario savedAdmin = usuarioRepository.save(admin);
+                System.out.println("✓ Usuário admin criado com ID: " + savedAdmin.getId() + ", Ativo: " + savedAdmin.getAtivo());
+            } else {
+                System.out.println("✓ Usuário admin já existe");
+            }
+
+            // Verificar se há outros dados
+            long clienteCount = clienteRepository.count();
+            System.out.println("Total de clientes no banco: " + clienteCount);
+
+            // Só adiciona outros dados se o banco estiver vazio
+            if (clienteCount == 0) {
+                System.out.println("Banco vazio, criando dados iniciais...");
                 
                 // Inserir clientes
                 Cliente cliente1 = new Cliente();
@@ -58,15 +80,7 @@ public class DataInitializer {
                 restaurante2.setAtivo(true);
                 restauranteRepository.save(restaurante2);
 
-                // Inserir usuários
-                Usuario admin = new Usuario();
-                admin.setNome("Admin Sistema");
-                admin.setEmail("admin@deliverytech.com");
-                admin.setSenha(passwordEncoder.encode("123456"));
-                admin.setRole(Role.ADMIN);
-                admin.setAtivo(true);
-                usuarioRepository.save(admin);
-
+                // Inserir usuários (exceto admin que já foi criado acima)
                 Usuario clienteUser = new Usuario();
                 clienteUser.setNome("João Silva");
                 clienteUser.setEmail("joao.silva@email.com");
@@ -103,7 +117,12 @@ public class DataInitializer {
                 burger1.setRestaurante(restaurante2);
                 produtoRepository.save(burger1);
 
+                System.out.println("✓ Dados iniciais criados com sucesso!");
+            } else {
+                System.out.println("✓ Banco já contém dados, pulando inicialização");
             }
+            
+            System.out.println("=== DataInitializer CONCLUÍDO ===");
         };
     }
 }
