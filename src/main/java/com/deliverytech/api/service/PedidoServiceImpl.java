@@ -12,9 +12,12 @@ import java.util.Optional;
 public class PedidoServiceImpl implements PedidoService { 
 
     private final PedidoRepository pedidoRepository;
-    
-    public PedidoServiceImpl(PedidoRepository pedidoRepository) {
+    private final com.deliverytech.api.repository.EntregaRepository entregaRepository;
+
+    public PedidoServiceImpl(PedidoRepository pedidoRepository,
+                             com.deliverytech.api.repository.EntregaRepository entregaRepository) {
         this.pedidoRepository = pedidoRepository;
+        this.entregaRepository = entregaRepository;
     }
 
     @Override
@@ -46,7 +49,17 @@ public class PedidoServiceImpl implements PedidoService {
     public Pedido atualizarStatus(Long id, StatusPedido novoStatus) {
         return pedidoRepository.findById(id).map(pedidoExistente -> {
             pedidoExistente.setStatus(novoStatus);
-            return pedidoRepository.save(pedidoExistente);
+            Pedido pedidoSalvo = pedidoRepository.save(pedidoExistente);
+            // Se status for ENTREGUE, criar Entrega
+            if (novoStatus == com.deliverytech.api.model.StatusPedido.ENTREGUE) {
+                com.deliverytech.api.model.Entrega entrega = new com.deliverytech.api.model.Entrega();
+                entrega.setPedido(pedidoSalvo);
+                entrega.setStatus(com.deliverytech.api.model.StatusEntrega.ENTREGUE);
+                entrega.setEnderecoEntrega(pedidoSalvo.getEnderecoEntrega() != null ? pedidoSalvo.getEnderecoEntrega().toString() : null);
+                entrega.setDataHoraRealizada(java.time.LocalDateTime.now());
+                entregaRepository.save(entrega);
+            }
+            return pedidoSalvo;
         }).orElseThrow(() -> new RuntimeException("Pedido não encontrado: " + id));
     }
 
