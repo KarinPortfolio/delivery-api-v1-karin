@@ -1,19 +1,22 @@
 package com.deliverytech.api.controller;
 
-import com.deliverytech.api.config.SwaggerTestSecurityConfig;
 import com.deliverytech.api.dto.request.UsuarioRequest;
 import com.deliverytech.api.model.Role;
 import com.deliverytech.api.model.Usuario;
 import com.deliverytech.api.service.UsuarioService;
+import com.deliverytech.api.exception.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -25,15 +28,16 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UsuarioController.class)
-@Import(SwaggerTestSecurityConfig.class)
+@ExtendWith(MockitoExtension.class)
 class UsuarioControllerSimpleTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private UsuarioService usuarioService;
+
+    @InjectMocks
+    private UsuarioController usuarioController;
+
+    private MockMvc mockMvc;
 
     private ObjectMapper objectMapper;
 
@@ -43,7 +47,12 @@ class UsuarioControllerSimpleTest {
 
     @BeforeEach
     void setUp() {
+        mockMvc = MockMvcBuilders.standaloneSetup(usuarioController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         
         // Mock data arrays
         usuariosMock = new Usuario[]{
@@ -147,6 +156,9 @@ class UsuarioControllerSimpleTest {
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.role").value(usuarioSalvo.getRole().toString()));
 
+            // Verify the mock was called before reset
+            verify(usuarioService).criarUsuario(any(Usuario.class));
+            
             // Reset mock para próxima iteração
             reset(usuarioService);
         }

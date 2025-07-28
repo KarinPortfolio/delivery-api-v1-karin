@@ -28,13 +28,18 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
+    public List<Pedido> listarTodos() {
+        return pedidoRepository.findAll();
+    }
+
+    @Override
     public List<Pedido> listarPorCliente(Long clienteId) {
-        return List.of();
+        return pedidoRepository.findByCliente_Id(clienteId);
     }
 
     @Override
     public List<Pedido> listarPorRestaurante(Long restauranteId) {
-        return List.of();
+        return pedidoRepository.findByRestaurante_Id(restauranteId);
     }
 
     @Override

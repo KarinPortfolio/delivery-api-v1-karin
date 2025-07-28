@@ -161,7 +161,7 @@ class PedidoRepositoryTest {
     @DisplayName("Deve encontrar pedidos por ID de cliente")
     void deveEncontrarPedidosPorClienteId() {
         // Act
-        List<Pedido> pedidosCliente1 = pedidoRepository.findByClienteId(cliente1.getId());
+        List<Pedido> pedidosCliente1 = pedidoRepository.findByCliente_Id(cliente1.getId());
 
         // Assert
         assertNotNull(pedidosCliente1);
@@ -174,7 +174,7 @@ class PedidoRepositoryTest {
     @DisplayName("Deve retornar lista vazia se nenhum pedido for encontrado para o ID do cliente")
     void deveRetornarListaVaziaParaClienteIdInexistente() {
         // Act
-        List<Pedido> pedidosDeClienteInexistente = pedidoRepository.findByClienteId(999L); // ID que não existe
+        List<Pedido> pedidosDeClienteInexistente = pedidoRepository.findByCliente_Id(999L); // ID que não existe
 
         // Assert
         assertNotNull(pedidosDeClienteInexistente);
@@ -187,7 +187,7 @@ class PedidoRepositoryTest {
     @DisplayName("Deve encontrar pedidos por ID de restaurante")
     void deveEncontrarPedidosPorRestauranteId() {
         // Act
-        List<Pedido> pedidosRestaurante1 = pedidoRepository.findByRestauranteId(restaurante1.getId());
+        List<Pedido> pedidosRestaurante1 = pedidoRepository.findByRestaurante_Id(restaurante1.getId());
 
         // Assert
         assertNotNull(pedidosRestaurante1);
@@ -200,7 +200,7 @@ class PedidoRepositoryTest {
     @DisplayName("Deve retornar lista vazia se nenhum pedido for encontrado para o ID do restaurante")
     void deveRetornarListaVaziaParaRestauranteIdInexistente() {
         // Act
-        List<Pedido> pedidosDeRestauranteInexistente = pedidoRepository.findByRestauranteId(999L); // ID que não existe
+        List<Pedido> pedidosDeRestauranteInexistente = pedidoRepository.findByRestaurante_Id(999L); // ID que não existe
 
         // Assert
         assertNotNull(pedidosDeRestauranteInexistente);

@@ -1,8 +1,11 @@
 package com.deliverytech.api.controller;
 
 import com.deliverytech.api.model.Restaurante;
+import com.deliverytech.api.dto.request.RestauranteRequest;
 import com.deliverytech.api.service.RestauranteServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +47,8 @@ class RestauranteControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(restauranteController).build();
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     @Test
@@ -74,8 +80,12 @@ class RestauranteControllerTest {
     @Test
     void deveCadastrarRestaurante() throws Exception {
         // Arrange
-        Restaurante restauranteRequest = new Restaurante();
+        RestauranteRequest restauranteRequest = new RestauranteRequest();
         restauranteRequest.setNome("Novo Restaurante");
+        restauranteRequest.setTelefone("11999999999");
+        restauranteRequest.setCategoria("Italiana");
+        restauranteRequest.setTaxaEntrega(new java.math.BigDecimal("5.00"));
+        restauranteRequest.setTempoEntregaMinutos(30);
 
         Restaurante restauranteResponse = new Restaurante();
         restauranteResponse.setId(1L);
@@ -114,8 +124,12 @@ class RestauranteControllerTest {
     @Test
     void deveAtualizarRestaurante() throws Exception {
         // Arrange
-        Restaurante restauranteRequest = new Restaurante();
+        RestauranteRequest restauranteRequest = new RestauranteRequest();
         restauranteRequest.setNome("Restaurante Atualizado");
+        restauranteRequest.setTelefone("11999999999");
+        restauranteRequest.setCategoria("Italiana");
+        restauranteRequest.setTaxaEntrega(new BigDecimal("5.00"));
+        restauranteRequest.setTempoEntregaMinutos(30);
 
         Restaurante restauranteResponse = new Restaurante();
         restauranteResponse.setId(1L);
@@ -184,8 +198,12 @@ class RestauranteControllerTest {
     @Test
     void deveRetornar409AoCadastrarRestauranteComNomeDuplicado() throws Exception {
         // Arrange
-        Restaurante restauranteRequest = new Restaurante();
+        RestauranteRequest restauranteRequest = new RestauranteRequest();
         restauranteRequest.setNome("Restaurante Existente");
+        restauranteRequest.setTelefone("11999999999");
+        restauranteRequest.setCategoria("Italiana");
+        restauranteRequest.setTaxaEntrega(new BigDecimal("5.00"));
+        restauranteRequest.setTempoEntregaMinutos(30);
 
         when(restauranteService.findByNome("Restaurante Existente")).thenReturn(true);
 

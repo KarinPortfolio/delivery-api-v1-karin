@@ -4,8 +4,6 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,18 +37,15 @@ public class AuthController {
     private final UsuarioRepository usuarioRepository;
     private final RestauranteRepository restauranteRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
     public AuthController(UsuarioRepository usuarioRepository, 
                          RestauranteRepository restauranteRepository,
                          PasswordEncoder passwordEncoder,
-                         AuthenticationManager authenticationManager,
                          JwtUtil jwtUtil) {
         this.usuarioRepository = usuarioRepository;
         this.restauranteRepository = restauranteRepository;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
 
@@ -72,6 +67,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
+            System.out.println("=== LOGIN ===");
+            System.out.println("Email: " + loginRequest.getEmail());
+            
+            if (loginRequest.getSenha() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Senha é obrigatória\"}");
+            }
+            
             // Buscar usuário
             Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(loginRequest.getEmail());
             if (!usuarioOpt.isPresent()) {
@@ -80,27 +83,26 @@ public class AuthController {
             }
 
             Usuario usuario = usuarioOpt.get();
-
-            // Verificar se o usuário está ativo
+            
+            // Verificar se usuário está ativo
             if (!usuario.getAtivo()) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("{\"status\": 403, \"error\": \"Forbidden\", \"message\": \"Usuário inativo\"}");
             }
+            
+            // Verificar senha
+            if (!passwordEncoder.matches(loginRequest.getSenha(), usuario.getSenha())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("{\"status\": 401, \"error\": \"Unauthorized\", \"message\": \"Credenciais inválidas\"}");
+            }
 
-            // Autenticar
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getSenha())
-            );
-
-            // Gerar token
+            // Gerar token JWT
             String token = jwtUtil.generateToken(usuario, usuario);
 
             return ResponseEntity.ok("{\"token\": \"" + token + "\"}");
 
-        } catch (org.springframework.security.core.AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("{\"status\": 401, \"error\": \"Unauthorized\", \"message\": \"Credenciais inválidas\"}");
         } catch (Exception e) {
+            System.err.println("Erro no login: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("{\"status\": 500, \"error\": \"Internal Server Error\", \"message\": \"Erro interno do servidor\"}");
         }
@@ -125,18 +127,12 @@ public class AuthController {
                     .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Email já cadastrado\"}");
             }
 
-            // Verificar se é um usuário ADMIN sem restaurante
-            if (registerRequest.getRole() == Role.ADMIN && registerRequest.getRestauranteId() != null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Usuário ADMIN não pode ter restaurante\"}");
-            }
-
-            // Verificar se é um usuário ADMIN com restaurante válido
+            // Verificar se é um usuário RESTAURANTE que precisa de restauranteId
             Restaurante restaurante = null;
-            if (registerRequest.getRole() == Role.ADMIN) {
+            if (registerRequest.getRole() == Role.RESTAURANTE) {
                 if (registerRequest.getRestauranteId() == null) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Usuário ADMIN deve ter um restaurante\"}");
+                        .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Usuário RESTAURANTE deve ter um restaurante\"}");
                 }
                 
                 Optional<Restaurante> restauranteOpt = restauranteRepository.findById(registerRequest.getRestauranteId());
@@ -145,6 +141,12 @@ public class AuthController {
                         .body("{\"status\": 400, \"error\": \"Bad Request\", \"message\": \"Restaurante não encontrado\"}");
                 }
                 restaurante = restauranteOpt.get();
+            } else if (registerRequest.getRestauranteId() != null) {
+                // Se não é RESTAURANTE mas tem restauranteId, buscar o restaurante (para ADMIN que pode opcionalmente ter)
+                Optional<Restaurante> restauranteOpt = restauranteRepository.findById(registerRequest.getRestauranteId());
+                if (restauranteOpt.isPresent()) {
+                    restaurante = restauranteOpt.get();
+                }
             }
 
             // Criar usuário

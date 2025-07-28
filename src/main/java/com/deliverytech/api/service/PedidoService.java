@@ -14,6 +14,8 @@ public interface PedidoService {
 
     Optional<Pedido> buscarPorId(Long id);
 
+    List<Pedido> listarTodos();
+
     List<Pedido> listarPorCliente(Long clienteId);
 
     List<Pedido> listarPorRestaurante(Long restauranteId);

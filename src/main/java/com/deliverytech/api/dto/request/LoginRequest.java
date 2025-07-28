@@ -1,5 +1,6 @@
 package com.deliverytech.api.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +15,14 @@ public class LoginRequest {
 
     @Schema(description = "Senha do usuário", example = "123456", required = true)
     @NotBlank(message = "A senha não pode estar em branco")
+    @JsonProperty(value = "senha")
     private String senha;
+
+    // Setter alternativo para aceitar "password" no JSON
+    @JsonProperty("password")
+    public void setPassword(String password) {
+        this.senha = password;
+    }
 
     // Constructors
     public LoginRequest() {

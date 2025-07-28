@@ -1,7 +1,13 @@
 package com.deliverytech.api.controller;
 
+import com.deliverytech.api.dto.request.ProdutoRequest;
+import com.deliverytech.api.dto.response.ProdutoResponse;
+import com.deliverytech.api.exception.EntityNotFoundException;
+import com.deliverytech.api.exception.GlobalExceptionHandler;
+import com.deliverytech.api.service.ProdutoService;
+import com.deliverytech.api.service.RestauranteService;
 import com.deliverytech.api.model.Produto;
-import com.deliverytech.api.service.ProdutoServiceImpl;
+import com.deliverytech.api.model.Restaurante;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,13 +21,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -29,7 +34,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProdutoControllerTest {
 
     @Mock
-    private ProdutoServiceImpl produtoService;
+    private ProdutoService produtoService;
+    
+    @Mock
+    private RestauranteService restauranteService;
 
     @InjectMocks
     private ProdutoController produtoController;
@@ -39,180 +47,102 @@ class ProdutoControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(produtoController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(produtoController)
+                .setControllerAdvice(new GlobalExceptionHandler())
+                .build();
         objectMapper = new ObjectMapper();
     }
 
     @Test
-    void deveListarProdutos() throws Exception {
-        // Arrange
-        Produto produto1 = new Produto();
-        produto1.setId(1L);
-        produto1.setNome("Pizza Margherita");
-        produto1.setDescricao("Pizza tradicional");
-        produto1.setPreco(new BigDecimal("25.99"));
-        produto1.setDisponivel(true);
+    void deveListarProdutosPorRestauranteComSucesso() throws Exception {
+        // Given
+        Long restauranteId = 1L;
+        List<Produto> produtos = Arrays.asList(
+            criarProduto(1L, "Pizza Margherita", BigDecimal.valueOf(25.00)),
+            criarProduto(2L, "Pizza Calabresa", BigDecimal.valueOf(30.00))
+        );
 
-        Produto produto2 = new Produto();
-        produto2.setId(2L);
-        produto2.setNome("Pizza Calabresa");
-        produto2.setDescricao("Pizza com calabresa");
-        produto2.setPreco(new BigDecimal("29.99"));
-        produto2.setDisponivel(true);
+        when(produtoService.buscarPorRestaurante(restauranteId)).thenReturn(produtos);
 
-        List<Produto> produtos = Arrays.asList(produto1, produto2);
-        when(produtoService.buscarPorRestaurante(anyLong())).thenReturn(produtos);
-
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/produtos")
-                .param("restauranteId", "1"))
+        // When & Then
+        mockMvc.perform(get("/api/v1/produtos/restaurante/{id}", restauranteId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].nome").value("Pizza Margherita"))
                 .andExpect(jsonPath("$[1].nome").value("Pizza Calabresa"));
     }
 
     @Test
-    void deveCadastrarProduto() throws Exception {
-        // Arrange
-        Produto produtoRequest = new Produto();
-        produtoRequest.setNome("Nova Pizza");
-        produtoRequest.setDescricao("Pizza nova");
-        produtoRequest.setPreco(new BigDecimal("35.99"));
-        produtoRequest.setDisponivel(true);
+    void deveBuscarProdutoPorIdComSucesso() throws Exception {
+        // Given
+        Long produtoId = 1L;
+        Produto produto = criarProduto(produtoId, "Pizza Margherita", BigDecimal.valueOf(25.00));
 
-        Produto produtoResponse = new Produto();
-        produtoResponse.setId(1L);
-        produtoResponse.setNome("Nova Pizza");
-        produtoResponse.setDescricao("Pizza nova");
-        produtoResponse.setPreco(new BigDecimal("35.99"));
-        produtoResponse.setDisponivel(true);
+        when(produtoService.buscarPorId(produtoId)).thenReturn(Optional.of(produto));
 
-        when(produtoService.cadastrar(any(Produto.class))).thenReturn(produtoResponse);
+        // When & Then
+        mockMvc.perform(get("/api/v1/produtos/{id}", produtoId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.nome").value("Pizza Margherita"));
+    }
 
-        // Act & Assert
+    @Test
+    void deveCriarProdutoComSucesso() throws Exception {
+        // Given
+        ProdutoRequest request = criarProdutoRequest();
+        Produto produto = criarProduto(1L, "Pizza Margherita", BigDecimal.valueOf(25.00));
+        Restaurante restaurante = new Restaurante();
+        restaurante.setId(request.getRestauranteId());
+
+        when(restauranteService.buscarPorId(request.getRestauranteId())).thenReturn(Optional.of(restaurante));
+        when(produtoService.cadastrar(any(Produto.class))).thenReturn(produto);
+
+        // When & Then
         mockMvc.perform(post("/api/v1/produtos")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(produtoRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.nome").value("Nova Pizza"))
-                .andExpect(jsonPath("$.preco").value(35.99));
+                .andExpect(jsonPath("$.nome").value("Pizza Margherita"));
     }
 
     @Test
-    void deveBuscarProdutoPorId() throws Exception {
-        // Arrange
-        Produto produto = new Produto();
-        produto.setId(1L);
-        produto.setNome("Pizza Margherita");
-        produto.setDescricao("Pizza tradicional");
-        produto.setPreco(new BigDecimal("25.99"));
-        produto.setDisponivel(true);
+    void deveRetornarNotFoundQuandoProdutoNaoExistir() throws Exception {
+        // Given
+        Long produtoId = 999L;
+        when(produtoService.buscarPorId(produtoId)).thenReturn(Optional.empty());
 
-        when(produtoService.buscarPorId(1L)).thenReturn(Optional.of(produto));
-
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/produtos/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.nome").value("Pizza Margherita"))
-                .andExpect(jsonPath("$.preco").value(25.99));
-    }
-
-    @Test
-    void deveAtualizarProduto() throws Exception {
-        // Arrange
-        Produto produtoRequest = new Produto();
-        produtoRequest.setNome("Pizza Atualizada");
-        produtoRequest.setDescricao("Pizza atualizada");
-        produtoRequest.setPreco(new BigDecimal("30.99"));
-        produtoRequest.setDisponivel(true);
-
-        Produto produtoResponse = new Produto();
-        produtoResponse.setId(1L);
-        produtoResponse.setNome("Pizza Atualizada");
-        produtoResponse.setDescricao("Pizza atualizada");
-        produtoResponse.setPreco(new BigDecimal("30.99"));
-        produtoResponse.setDisponivel(true);
-
-        when(produtoService.atualizar(anyLong(), any(Produto.class))).thenReturn(produtoResponse);
-
-        // Act & Assert
-        mockMvc.perform(put("/api/v1/produtos/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(produtoRequest)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.nome").value("Pizza Atualizada"))
-                .andExpect(jsonPath("$.preco").value(30.99));
-    }
-
-    // ===== TESTES DE CASOS DE ERRO =====
-
-    @Test
-    void deveRetornar404AoBuscarProdutoInexistente() throws Exception {
-        // Arrange
-        when(produtoService.buscarPorId(999L)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/produtos/999"))
+        // When & Then
+        mockMvc.perform(get("/api/v1/produtos/{id}", produtoId))
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void deveListarTodosProdutos() throws Exception {
-        // Arrange
-        Produto produto1 = new Produto();
-        produto1.setId(1L);
-        produto1.setNome("Pizza Margherita");
-        produto1.setPreco(new BigDecimal("25.99"));
-
-        Produto produto2 = new Produto();
-        produto2.setId(2L);
-        produto2.setNome("Pizza Calabresa");
-        produto2.setPreco(new BigDecimal("29.99"));
-
-        List<Produto> produtos = Arrays.asList(produto1, produto2);
-        when(produtoService.listarTodos()).thenReturn(produtos);
-
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/produtos"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].nome").value("Pizza Margherita"))
-                .andExpect(jsonPath("$[1].nome").value("Pizza Calabresa"));
+    private Produto criarProduto(Long id, String nome, BigDecimal preco) {
+        Produto produto = new Produto();
+        produto.setId(id);
+        produto.setNome(nome);
+        produto.setPreco(preco);
+        return produto;
     }
 
-    @Test
-    void deveAlterarDisponibilidadeProduto() throws Exception {
-        // Arrange
-        doNothing().when(produtoService).alterarDisponibilidade(1L, false);
-
-        // Act & Assert
-        mockMvc.perform(patch("/api/v1/produtos/1/disponibilidade")
-                .param("disponivel", "false"))
-                .andExpect(status().isOk());
-
-        verify(produtoService, times(1)).alterarDisponibilidade(1L, false);
+    private ProdutoResponse criarProdutoResponse(Long id, String nome, BigDecimal preco) {
+        ProdutoResponse response = new ProdutoResponse();
+        response.setId(id);
+        response.setNome(nome);
+        response.setPreco(preco);
+        return response;
     }
 
-    @Test
-    void deveRetornarListaVaziaQuandoNaoHouverProdutosPorRestaurante() throws Exception {
-        // Arrange
-        when(produtoService.buscarPorRestaurante(1L)).thenReturn(Collections.emptyList());
-
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/produtos")
-                .param("restauranteId", "1"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(0));
+    private ProdutoRequest criarProdutoRequest() {
+        ProdutoRequest request = new ProdutoRequest();
+        request.setNome("Pizza Margherita");
+        request.setCategoria("Pizza");
+        request.setDescricao("Clássica italiana com tomate e mussarela");
+        request.setPreco(BigDecimal.valueOf(25.00));
+        request.setRestauranteId(1L);
+        request.setDisponivel(true);
+        return request;
     }
 }

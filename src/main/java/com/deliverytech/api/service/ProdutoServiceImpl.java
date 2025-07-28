@@ -3,6 +3,7 @@ package com.deliverytech.api.service;
 import com.deliverytech.api.model.Produto;
 import com.deliverytech.api.repository.ProdutoRepository; 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,10 +49,14 @@ public class ProdutoServiceImpl implements ProdutoService {
         }).orElseThrow(() -> new RuntimeException("Produto not found for update: " + id));
     }
     @Override
-        public void alterarDisponibilidade(Long id, boolean disponivel) {
-            produtoRepository.findById(id).ifPresent(produto -> {
-                produto.setDisponivel(disponivel);
-                produtoRepository.save(produto);
-            });
+    @Transactional
+    public void alterarDisponibilidade(Long id, boolean disponivel) {
+        Optional<Produto> produtoOpt = produtoRepository.findById(id);
+        if (produtoOpt.isPresent()) {
+            Produto produto = produtoOpt.get();
+            produto.setDisponivel(disponivel);
+            produtoRepository.save(produto);
         }
+        // Se o produto não existir, o método não faz nada (conforme implementação anterior)
+    }
     }

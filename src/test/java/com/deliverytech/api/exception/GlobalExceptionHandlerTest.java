@@ -47,7 +47,7 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(400, response.getBody().getStatus());
-        assertEquals("Erro de validação", response.getBody().getMessage());
+        assertEquals("Erro de validação nos dados enviados", response.getBody().getMessage());
         assertNotNull(response.getBody().getTimestamp());
         assertNotNull(response.getBody().getPath());
     }
@@ -128,7 +128,7 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(400, response.getBody().getStatus());
-        assertEquals("Erro de validação", response.getBody().getMessage());
+        assertEquals("Erro de validação nos dados enviados", response.getBody().getMessage());
     }
 
     @Test
@@ -184,7 +184,7 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(400, response.getBody().getStatus());
-        assertEquals("Erro de validação", response.getBody().getMessage());
+        assertEquals("Erro de validação nos dados enviados", response.getBody().getMessage());
         assertNotNull(response.getBody().getTimestamp());
         assertNotNull(response.getBody().getPath());
     }

@@ -3,6 +3,8 @@ package com.deliverytech.api.controller;
 import com.deliverytech.api.model.Cliente;
 import com.deliverytech.api.service.ClienteServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +44,8 @@ class ClienteControllerTest {
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(clienteController).build();
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     @Test

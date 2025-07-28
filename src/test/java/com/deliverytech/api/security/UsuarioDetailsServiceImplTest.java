@@ -98,13 +98,14 @@ class UsuarioDetailsServiceImplTest {
         
         when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
 
-        // When
-        UserDetails userDetails = usuarioDetailsService.loadUserByUsername(email);
-
-        // Then
-        assertNotNull(userDetails);
-        assertEquals(email, userDetails.getUsername());
-        assertFalse(userDetails.isEnabled());
+        // When & Then
+        UsernameNotFoundException exception = assertThrows(
+                UsernameNotFoundException.class,
+                () -> usuarioDetailsService.loadUserByUsername(email)
+        );
+        
+        assertTrue(exception.getMessage().contains("Usuário inativo"));
+        assertTrue(exception.getMessage().contains(email));
     }
 
     @Test
@@ -136,7 +137,7 @@ class UsuarioDetailsServiceImplTest {
                 () -> usuarioDetailsService.loadUserByUsername(email)
         );
         
-        assertTrue(exception.getMessage().contains("Erro ao acessar dados do usuário"));
+        assertTrue(exception.getMessage().contains("Erro ao carregar usuário"));
         assertTrue(exception.getMessage().contains(email));
     }
 
@@ -215,10 +216,13 @@ class UsuarioDetailsServiceImplTest {
         UserDetails userDetailsAtivo = usuarioDetailsService.loadUserByUsername(email);
         assertTrue(userDetailsAtivo.isEnabled());
         
-        // Test usuário inativo
+        // Test usuário inativo - deve lançar exceção
         when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuarioInativo));
-        UserDetails userDetailsInativo = usuarioDetailsService.loadUserByUsername(email);
-        assertFalse(userDetailsInativo.isEnabled());
+        UsernameNotFoundException exception = assertThrows(
+                UsernameNotFoundException.class,
+                () -> usuarioDetailsService.loadUserByUsername(email)
+        );
+        assertTrue(exception.getMessage().contains("Usuário inativo"));
     }
 
     // Método auxiliar para criar usuário mock

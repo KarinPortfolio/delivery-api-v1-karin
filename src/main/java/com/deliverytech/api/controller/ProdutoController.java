@@ -106,9 +106,18 @@ public class ProdutoController {
     }
 
     @PatchMapping("/{id}/disponibilidade")
-    public ResponseEntity<Void> alterarDisponibilidade(@PathVariable Long id, @RequestParam boolean disponivel) {
+    public ResponseEntity<ProdutoResponse> alterarDisponibilidade(@PathVariable Long id, @RequestParam boolean disponivel) {
+        Optional<Produto> produtoOpt = produtoService.buscarPorId(id);
+        if (produtoOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        
         produtoService.alterarDisponibilidade(id, disponivel);
-        return ResponseEntity.ok().build();
+        
+        // Buscar o produto atualizado para retornar
+        Produto produtoAtualizado = produtoService.buscarPorId(id).get();
+        ProdutoResponse response = convertToResponse(produtoAtualizado);
+        return ResponseEntity.ok(response);
     }
 
     private ProdutoResponse convertToResponse(Produto produto) {
