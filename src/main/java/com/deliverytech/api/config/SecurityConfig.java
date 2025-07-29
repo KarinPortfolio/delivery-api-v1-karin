@@ -47,6 +47,7 @@ public class SecurityConfig {
                 .requestMatchers("/api-docs/**", "/v3/api-docs/**", "/v3/api-docs.yaml").permitAll()
                 .requestMatchers("/webjars/**").permitAll()
                 .requestMatchers("/error").permitAll()
+                .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
