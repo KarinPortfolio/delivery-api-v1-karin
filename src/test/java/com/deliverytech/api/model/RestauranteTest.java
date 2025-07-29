@@ -48,7 +48,7 @@ class RestauranteTest {
         LocalDateTime dataCadastro = LocalDateTime.of(2024, 1, 1, 12, 0);
 
         // Act
-        Restaurante restauranteCompleto = new Restaurante(id, nome, categoria, telefone, taxaEntrega, tempoEntregaMinutos, ativo, dataCadastro);
+        Restaurante restauranteCompleto = new Restaurante(id, nome, telefone, categoria, taxaEntrega, tempoEntregaMinutos, ativo, dataCadastro);
 
         // Assert
         assertEquals(id, restauranteCompleto.getId());
