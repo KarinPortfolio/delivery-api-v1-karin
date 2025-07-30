@@ -32,6 +32,7 @@ class EntregaControllerTest {
     private MockMvc mockMvc;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(entregaController)
                 .setControllerAdvice(new GlobalExceptionHandler())

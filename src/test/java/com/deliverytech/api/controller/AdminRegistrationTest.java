@@ -26,7 +26,6 @@ import com.deliverytech.api.model.Role;
 import com.deliverytech.api.model.Usuario;
 import com.deliverytech.api.repository.RestauranteRepository;
 import com.deliverytech.api.repository.UsuarioRepository;
-import com.deliverytech.api.security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -45,8 +44,6 @@ class AdminRegistrationTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    @Mock
-    private JwtUtil jwtUtil;
 
     @InjectMocks
     private AuthController authController;
@@ -54,6 +51,7 @@ class AdminRegistrationTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
         objectMapper = new ObjectMapper();

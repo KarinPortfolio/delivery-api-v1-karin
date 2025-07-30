@@ -29,13 +29,10 @@ import com.deliverytech.api.service.ProdutoService;
 import com.deliverytech.api.service.RestauranteService;
 
 import jakarta.validation.Valid;
-import jakarta.annotation.Generated;
-
 
 @RestController
 @RequestMapping("/api/v1/pedidos")
 public class PedidoController {
-@Generated(value = "PedidoController.class")
     private final PedidoService pedidoService;
     private final ClienteService clienteService;
     private final RestauranteService restauranteService;
@@ -54,13 +51,13 @@ public class PedidoController {
         // 1. Buscar cliente
         Optional<Cliente> clienteOpt = clienteService.buscarPorId(request.getClienteId());
         if (clienteOpt.isEmpty()) {
-            return ResponseEntity.badRequest().build(); // TODO: Retornar erro mais específico
+            throw new com.deliverytech.api.exception.EntityNotFoundException("Cliente", request.getClienteId());
         }
         
         // 2. Buscar restaurante
         Optional<Restaurante> restauranteOpt = restauranteService.buscarPorId(request.getRestauranteId());
         if (restauranteOpt.isEmpty()) {
-            return ResponseEntity.badRequest().build(); // TODO: Retornar erro mais específico
+            throw new com.deliverytech.api.exception.EntityNotFoundException("Restaurante", request.getRestauranteId());
         }
         
         // 3. Criar pedido

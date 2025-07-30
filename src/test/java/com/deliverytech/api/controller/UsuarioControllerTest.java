@@ -35,6 +35,7 @@ class UsuarioControllerTest {
     private MockMvc mockMvc;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(usuarioController)
                 .setControllerAdvice(new GlobalExceptionHandler())

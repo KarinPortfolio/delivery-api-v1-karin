@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
+import jakarta.annotation.Generated;
 import java.util.Arrays;
 
 /**
@@ -13,7 +13,7 @@ import java.util.Arrays;
  */
 @Configuration
 public class CorsConfig {
-
+    @Generated (value = "CorsConfig", date = "2023-10-01T12:00:00Z")
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

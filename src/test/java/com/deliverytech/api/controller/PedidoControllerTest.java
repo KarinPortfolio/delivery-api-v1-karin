@@ -31,6 +31,7 @@ class PedidoControllerTest {
     private MockMvc mockMvc;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(pedidoController)
                 .setControllerAdvice(new GlobalExceptionHandler())

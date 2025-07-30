@@ -51,6 +51,7 @@ class RestauranteServiceImplTest {
     private Restaurante restaurante2;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         restaurante1 = new Restaurante();
         restaurante1.setId(1L);

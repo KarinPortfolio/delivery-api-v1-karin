@@ -15,12 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,6 +36,7 @@ class PedidoServiceImplTest {
     private Restaurante restaurante;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         // Criar cliente para teste
         cliente = new Cliente();
@@ -64,5 +62,18 @@ class PedidoServiceImplTest {
         pedidoService = new PedidoServiceImpl(pedidoRepository, entregaRepository);
     }
 
-    // ...existing tests from PedidoSerivceImplTest.java...
+    @Test
+    @DisplayName("Deve retornar pedido por ID com sucesso")
+    void deveBuscarPedidoPorIdComSucesso() {
+        // Given
+        when(pedidoRepository.findById(1L)).thenReturn(Optional.of(pedido));
+
+        // When
+        Optional<Pedido> resultado = pedidoService.buscarPorId(1L);
+
+        // Then
+        assertTrue(resultado.isPresent());
+        assertEquals(pedido.getId(), resultado.get().getId());
+        verify(pedidoRepository).findById(1L);
+    }
 }

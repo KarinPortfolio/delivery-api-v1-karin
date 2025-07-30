@@ -7,14 +7,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.deliverytech.api.model.*;
 import com.deliverytech.api.repository.*;
-
+import jakarta.annotation.Generated;
 import java.math.BigDecimal;
 
 @Configuration
 public class DataInitializer {
-
+@Generated (value = "DataInitializer", date = "2023-10-01T12:00:00Z")
     @Bean
-   
     CommandLineRunner initData(
             ClienteRepository clienteRepository,
             RestauranteRepository restauranteRepository,

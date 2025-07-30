@@ -1,10 +1,8 @@
+
 package com.deliverytech.api.controller;
+import com.deliverytech.api.service.ProdutoService;
 
 import com.deliverytech.api.dto.request.ProdutoRequest;
-import com.deliverytech.api.dto.response.ProdutoResponse;
-import com.deliverytech.api.exception.EntityNotFoundException;
-import com.deliverytech.api.exception.GlobalExceptionHandler;
-import com.deliverytech.api.service.ProdutoService;
 import com.deliverytech.api.service.RestauranteService;
 import com.deliverytech.api.model.Produto;
 import com.deliverytech.api.model.Restaurante;
@@ -25,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -46,9 +43,9 @@ class ProdutoControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(produtoController)
-                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
         objectMapper = new ObjectMapper();
     }
@@ -127,13 +124,6 @@ class ProdutoControllerTest {
         return produto;
     }
 
-    private ProdutoResponse criarProdutoResponse(Long id, String nome, BigDecimal preco) {
-        ProdutoResponse response = new ProdutoResponse();
-        response.setId(id);
-        response.setNome(nome);
-        response.setPreco(preco);
-        return response;
-    }
 
     private ProdutoRequest criarProdutoRequest() {
         ProdutoRequest request = new ProdutoRequest();

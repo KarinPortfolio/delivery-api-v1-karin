@@ -1,4 +1,6 @@
+
 package com.deliverytech.api.exception;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,8 +12,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,6 +22,7 @@ class GlobalExceptionHandlerTest {
     private WebRequest webRequest;
 
     @BeforeEach
+     @SuppressWarnings("unused")
     void setUp() {
         globalExceptionHandler = new GlobalExceptionHandler();
         webRequest = mock(WebRequest.class);

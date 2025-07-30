@@ -3,6 +3,7 @@ package com.deliverytech.api.security;
 import com.deliverytech.api.model.Usuario;
 import com.deliverytech.api.model.Role;
 import io.jsonwebtoken.ExpiredJwtException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,7 @@ import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @ExtendWith(MockitoExtension.class)
 class JwtAuthenticationFilterTest {
@@ -43,6 +45,7 @@ class JwtAuthenticationFilterTest {
     private UserDetails userDetails;
 
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+    // ...existing code...
 
     @BeforeEach
     void setUp() {
@@ -173,10 +176,8 @@ class JwtAuthenticationFilterTest {
         when(request.getHeader("Authorization")).thenReturn(authHeader);
         when(jwtUtil.extractUsername(token)).thenThrow(new RuntimeException("Generic error"));
 
-        // When
-        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
-
-        // Then
+        // When & Then
+        assertDoesNotThrow(() -> jwtAuthenticationFilter.doFilterInternal(request, response, filterChain));
         verify(filterChain).doFilter(request, response);
         verify(jwtUtil).extractUsername(token);
         verify(userDetailsService, never()).loadUserByUsername(anyString());
@@ -235,10 +236,8 @@ class JwtAuthenticationFilterTest {
         when(userDetailsService.loadUserByUsername(email))
                 .thenThrow(new RuntimeException("User not found"));
 
-        // When
-        jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
-
-        // Then
+        // When & Then
+        assertDoesNotThrow(() -> jwtAuthenticationFilter.doFilterInternal(request, response, filterChain));
         verify(filterChain).doFilter(request, response);
         verify(jwtUtil).extractUsername(token);
         verify(userDetailsService).loadUserByUsername(email);

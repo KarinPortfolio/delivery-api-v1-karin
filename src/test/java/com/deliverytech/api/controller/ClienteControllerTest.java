@@ -41,6 +41,7 @@ class ClienteControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(clienteController).build();
         objectMapper = new ObjectMapper();

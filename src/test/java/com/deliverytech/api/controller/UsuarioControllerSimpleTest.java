@@ -46,6 +46,7 @@ class UsuarioControllerSimpleTest {
     private UsuarioRequest[] requestsMock;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(usuarioController)
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -167,8 +168,7 @@ class UsuarioControllerSimpleTest {
     @Test
     void deveAtualizarUsuarioComSucesso() throws Exception {
         // Given - Usando dados do array mock
-        Usuario usuarioExistente = usuariosMock[0];
-        UsuarioRequest requestAtualização = requestsMock[0];
+                UsuarioRequest requestAtualização = requestsMock[0];
         requestAtualização.setNome("Admin Atualizado");
         
         Usuario usuarioAtualizado = criarUsuarioMock(1L, "Admin Atualizado", "admin@test.com", Role.ADMIN, true);
@@ -188,7 +188,7 @@ class UsuarioControllerSimpleTest {
     @Test
     void deveDeletarUsuarioComSucesso() throws Exception {
         // Given - Usando usuário do array mock
-        Usuario usuario = usuariosMock[0];
+        
         doNothing().when(usuarioService).deletarUsuario(1L);
 
         // When & Then
