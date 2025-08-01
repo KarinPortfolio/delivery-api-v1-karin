@@ -1,0 +1,2019 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "Delivery API",
+        "description": "API completa para sistema de delivery com validações e exemplos",
+        "contact": {
+            "name": "Equipe Delivery",
+            "email": "suporte@delivery.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8081",
+            "description": "Servidor de Desenvolvimento"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Autenticação",
+            "description": "Endpoints para login e registro de usuários"
+        }
+    ],
+    "paths": {
+        "/api/v1/usuarios/{id}": {
+            "get": {
+                "tags": [
+                    "usuario-controller"
+                ],
+                "operationId": "buscarUsuarioPorId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "usuario-controller"
+                ],
+                "operationId": "atualizarUsuario",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UsuarioRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "usuario-controller"
+                ],
+                "operationId": "deletarUsuario",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/restaurantes/{id}": {
+            "get": {
+                "tags": [
+                    "restaurante-controller"
+                ],
+                "operationId": "buscarPorId",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RestauranteResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "restaurante-controller"
+                ],
+                "operationId": "atualizar",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RestauranteRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RestauranteResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "restaurante-controller"
+                ],
+                "operationId": "deletar",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/produtos/{id}": {
+            "get": {
+                "tags": [
+                    "produto-controller"
+                ],
+                "operationId": "buscarPorId_1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProdutoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "produto-controller"
+                ],
+                "operationId": "atualizar_1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProdutoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProdutoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pedidos/{id}/status": {
+            "put": {
+                "tags": [
+                    "pedido-controller"
+                ],
+                "operationId": "atualizarStatusPut",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AtualizarStatusPedidoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PedidoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "pedido-controller"
+                ],
+                "operationId": "atualizarStatus",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AtualizarStatusPedidoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PedidoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/entregadores/{id}": {
+            "get": {
+                "tags": [
+                    "entregador-controller"
+                ],
+                "operationId": "getEntregadorById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Entregador"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "entregador-controller"
+                ],
+                "operationId": "updateEntregador",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Entregador"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Entregador"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "entregador-controller"
+                ],
+                "operationId": "deleteEntregador",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/clientes/{id}": {
+            "get": {
+                "tags": [
+                    "cliente-controller"
+                ],
+                "operationId": "buscarPorId_3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ClienteResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "cliente-controller"
+                ],
+                "operationId": "atualizar_2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClienteRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ClienteResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/usuarios": {
+            "get": {
+                "tags": [
+                    "usuario-controller"
+                ],
+                "operationId": "listarTodosUsuarios",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UsuarioResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "usuario-controller"
+                ],
+                "operationId": "criarUsuario",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UsuarioRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UsuarioResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/restaurantes": {
+            "get": {
+                "tags": [
+                    "restaurante-controller"
+                ],
+                "operationId": "listar",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RestauranteResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "restaurante-controller"
+                ],
+                "operationId": "cadastrar",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RestauranteRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RestauranteResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/produtos": {
+            "get": {
+                "tags": [
+                    "produto-controller"
+                ],
+                "operationId": "listar_1",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProdutoResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "produto-controller"
+                ],
+                "operationId": "cadastrar_1",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProdutoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProdutoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pedidos": {
+            "get": {
+                "tags": [
+                    "pedido-controller"
+                ],
+                "operationId": "listarTodos",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PedidoResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "pedido-controller"
+                ],
+                "operationId": "criar",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PedidoRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PedidoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/entregadores": {
+            "get": {
+                "tags": [
+                    "entregador-controller"
+                ],
+                "operationId": "getAllEntregadores",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Entregador"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "entregador-controller"
+                ],
+                "operationId": "createEntregador",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Entregador"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Entregador"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/clientes": {
+            "get": {
+                "tags": [
+                    "cliente-controller"
+                ],
+                "operationId": "listar_2",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ClienteResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "cliente-controller"
+                ],
+                "operationId": "cadastrar_2",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ClienteRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ClienteResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/register": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Registrar novo usuário",
+                "description": "Cria uma nova conta de usuário no sistema",
+                "operationId": "register",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário criado com sucesso",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "400": {
+                        "description": "Email já existe ou dados inválidos",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Realizar login",
+                "description": "Autentica um usuário e retorna um token JWT",
+                "operationId": "login",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "200": {
+                        "description": "Login realizado com sucesso",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "400": {
+                        "description": "Dados inválidos",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "403": {
+                        "description": "Usuário inativo",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/produtos/{id}/disponibilidade": {
+            "patch": {
+                "tags": [
+                    "produto-controller"
+                ],
+                "summary": "Alterar disponibilidade do produto",
+                "description": "Altera a disponibilidade de um produto pelo ID. Exemplo de requisição: /api/v1/produtos/1/disponibilidade?disponivel=false",
+                "operationId": "alterarDisponibilidade",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": 1
+                    },
+                    {
+                        "name": "disponivel",
+                        "in": "query",
+                        "description": "Disponibilidade do produto",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "example": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProdutoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/clientes/{id}/ativar-desativar": {
+            "patch": {
+                "tags": [
+                    "cliente-controller"
+                ],
+                "operationId": "ativarDesativar",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/restaurantes/categoria/{categoria}": {
+            "get": {
+                "tags": [
+                    "restaurante-controller"
+                ],
+                "operationId": "buscarPorCategoria",
+                "parameters": [
+                    {
+                        "name": "categoria",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RestauranteResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/produtos/restaurante/{restauranteId}": {
+            "get": {
+                "tags": [
+                    "produto-controller"
+                ],
+                "operationId": "listarPorRestaurante",
+                "parameters": [
+                    {
+                        "name": "restauranteId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProdutoResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pedidos/{id}": {
+            "get": {
+                "tags": [
+                    "pedido-controller"
+                ],
+                "operationId": "buscarPorId_2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PedidoResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "pedido-controller"
+                ],
+                "operationId": "cancelar",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/pedidos/restaurante/{restauranteId}": {
+            "get": {
+                "tags": [
+                    "pedido-controller"
+                ],
+                "operationId": "listarPorRestaurante_1",
+                "parameters": [
+                    {
+                        "name": "restauranteId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PedidoResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/pedidos/cliente/{clienteId}": {
+            "get": {
+                "tags": [
+                    "pedido-controller"
+                ],
+                "operationId": "listarPorCliente",
+                "parameters": [
+                    {
+                        "name": "clienteId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PedidoResponse"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/entregas/{id}": {
+            "get": {
+                "tags": [
+                    "entrega-controller"
+                ],
+                "operationId": "getEntregaById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "*/*": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Entrega"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "UsuarioRequest": {
+                "required": [
+                    "email",
+                    "nome",
+                    "role",
+                    "senha"
+                ],
+                "type": "object",
+                "properties": {
+                    "nome": {
+                        "type": "string",
+                        "description": "Nome do usuário",
+                        "example": "João da Silva"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email do usuário",
+                        "example": "joao.silva@example.com"
+                    },
+                    "senha": {
+                        "type": "string",
+                        "description": "Senha do usuário",
+                        "example": "senha123"
+                    },
+                    "role": {
+                        "type": "string",
+                        "description": "Role do usuário",
+                        "example": "CLIENTE",
+                        "enum": [
+                            "CLIENTE",
+                            "RESTAURANTE",
+                            "ADMIN",
+                            "ENTREGADOR"
+                        ]
+                    }
+                }
+            },
+            "UsuarioResponse": {
+                "required": [
+                    "ativo",
+                    "email",
+                    "id",
+                    "nome",
+                    "role"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "ID do usuário",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "nome": {
+                        "type": "string",
+                        "description": "Nome do usuário",
+                        "example": "João da Silva"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email do usuário",
+                        "example": "joao.silva@example.com"
+                    },
+                    "role": {
+                        "type": "string",
+                        "description": "Papel do usuário",
+                        "example": "CLIENTE",
+                        "enum": [
+                            "CLIENTE",
+                            "RESTAURANTE",
+                            "ADMIN",
+                            "ENTREGADOR"
+                        ]
+                    },
+                    "ativo": {
+                        "type": "boolean",
+                        "description": "Status do usuário",
+                        "example": true
+                    },
+                    "dataCriacao": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "RestauranteRequest": {
+                "required": [
+                    "categoria",
+                    "nome",
+                    "taxaEntrega",
+                    "telefone",
+                    "tempoEntregaMinutos"
+                ],
+                "type": "object",
+                "properties": {
+                    "nome": {
+                        "type": "string",
+                        "description": "Nome do restaurante",
+                        "example": "Pizzaria do João"
+                    },
+                    "telefone": {
+                        "type": "string",
+                        "description": "Telefone do restaurante",
+                        "example": "(11) 1234-5678"
+                    },
+                    "categoria": {
+                        "type": "string",
+                        "description": "Categoria do restaurante",
+                        "example": "PIZZARIA"
+                    },
+                    "taxaEntrega": {
+                        "minimum": 0.00,
+                        "exclusiveMinimum": false,
+                        "type": "number",
+                        "description": "Taxa de entrega do restaurante",
+                        "example": 5.0
+                    },
+                    "tempoEntregaMinutos": {
+                        "minimum": 0,
+                        "type": "integer",
+                        "description": "Tempo de entrega mínimo do restaurante",
+                        "format": "int32",
+                        "example": 30
+                    },
+                    "ativo": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "RestauranteResponse": {
+                "required": [
+                    "ativo",
+                    "categoria",
+                    "id",
+                    "nome",
+                    "taxaEntrega",
+                    "telefone",
+                    "tempoEntregaMinutos"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "ID do restaurante",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "nome": {
+                        "type": "string",
+                        "description": "Nome do restaurante",
+                        "example": "Pizzaria do João"
+                    },
+                    "categoria": {
+                        "type": "string",
+                        "description": "Categoria do restaurante",
+                        "example": "Pizzaria"
+                    },
+                    "telefone": {
+                        "type": "string",
+                        "description": "Telefone do restaurante",
+                        "example": "(11) 1234-5678"
+                    },
+                    "taxaEntrega": {
+                        "type": "number",
+                        "description": "Taxa de entrega do restaurante",
+                        "example": 5.0
+                    },
+                    "tempoEntregaMinutos": {
+                        "type": "integer",
+                        "description": "Tempo de entrega em minutos",
+                        "format": "int32",
+                        "example": 30
+                    },
+                    "ativo": {
+                        "type": "boolean",
+                        "description": "Status do restaurante",
+                        "example": true
+                    }
+                }
+            },
+            "ProdutoRequest": {
+                "required": [
+                    "categoria",
+                    "descricao",
+                    "nome",
+                    "preco",
+                    "restauranteId"
+                ],
+                "type": "object",
+                "properties": {
+                    "nome": {
+                        "type": "string",
+                        "description": "Nome do produto",
+                        "example": "miojo"
+                    },
+                    "categoria": {
+                        "type": "string",
+                        "description": "Categoria do produto",
+                        "example": "massa"
+                    },
+                    "descricao": {
+                        "type": "string",
+                        "description": "Descrição do produto",
+                        "example": "miojo"
+                    },
+                    "preco": {
+                        "minimum": 0.00,
+                        "exclusiveMinimum": false,
+                        "type": "number",
+                        "description": "Preço do produto",
+                        "example": 5
+                    },
+                    "restauranteId": {
+                        "type": "integer",
+                        "description": "ID do restaurante",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "disponivel": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "ProdutoResponse": {
+                "required": [
+                    "categoria",
+                    "descricao",
+                    "disponivel",
+                    "id",
+                    "nome",
+                    "preco"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "ID do produto",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "nome": {
+                        "type": "string",
+                        "description": "Nome do produto",
+                        "example": "Pizza Margherita"
+                    },
+                    "categoria": {
+                        "type": "string",
+                        "description": "Categoria do produto",
+                        "example": "Pizzas"
+                    },
+                    "descricao": {
+                        "type": "string",
+                        "description": "Descrição do produto",
+                        "example": "Deliciosa pizza com molho de tomate e queijo"
+                    },
+                    "preco": {
+                        "type": "number",
+                        "description": "Preço do produto",
+                        "example": 29.9
+                    },
+                    "disponivel": {
+                        "type": "boolean",
+                        "description": "Disponibilidade do produto",
+                        "example": true
+                    }
+                }
+            },
+            "AtualizarStatusPedidoRequest": {
+                "required": [
+                    "status"
+                ],
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "CRIADO",
+                            "CONFIRMADO",
+                            "EM_PREPARACAO",
+                            "ENVIADO",
+                            "ENTREGUE",
+                            "CANCELADO"
+                        ]
+                    }
+                }
+            },
+            "Endereco": {
+                "type": "object",
+                "properties": {
+                    "rua": {
+                        "type": "string"
+                    },
+                    "numero": {
+                        "type": "string"
+                    },
+                    "bairro": {
+                        "type": "string"
+                    },
+                    "cidade": {
+                        "type": "string"
+                    },
+                    "estado": {
+                        "type": "string"
+                    },
+                    "cep": {
+                        "type": "string"
+                    }
+                },
+                "description": "Endereço de entrega"
+            },
+            "ItemPedidoResponse": {
+                "required": [
+                    "nomeProduto",
+                    "precoUnitario",
+                    "produtoId",
+                    "quantidade"
+                ],
+                "type": "object",
+                "properties": {
+                    "produtoId": {
+                        "type": "integer",
+                        "description": "ID do produto",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "nomeProduto": {
+                        "type": "string",
+                        "description": "Nome do produto",
+                        "example": "Pizza Margherita"
+                    },
+                    "quantidade": {
+                        "type": "integer",
+                        "description": "Quantidade do produto",
+                        "format": "int32",
+                        "example": 2
+                    },
+                    "precoUnitario": {
+                        "type": "number",
+                        "description": "Preço unitário do produto",
+                        "example": 29.9
+                    }
+                },
+                "description": "Itens do pedido"
+            },
+            "PedidoResponse": {
+                "required": [
+                    "clienteId",
+                    "dataPedido",
+                    "enderecoEntrega",
+                    "id",
+                    "itens",
+                    "restauranteId",
+                    "status",
+                    "total"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "ID do pedido",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "clienteId": {
+                        "type": "integer",
+                        "description": "ID do cliente",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "restauranteId": {
+                        "type": "integer",
+                        "description": "ID do restaurante",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "enderecoEntrega": {
+                        "$ref": "#/components/schemas/Endereco"
+                    },
+                    "total": {
+                        "type": "number",
+                        "description": "Valor total do pedido",
+                        "example": 100.0
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Status do pedido",
+                        "example": "PENDENTE",
+                        "enum": [
+                            "CRIADO",
+                            "CONFIRMADO",
+                            "EM_PREPARACAO",
+                            "ENVIADO",
+                            "ENTREGUE",
+                            "CANCELADO"
+                        ]
+                    },
+                    "dataPedido": {
+                        "type": "string",
+                        "description": "Data do pedido",
+                        "format": "date-time"
+                    },
+                    "itens": {
+                        "type": "array",
+                        "description": "Itens do pedido",
+                        "items": {
+                            "$ref": "#/components/schemas/ItemPedidoResponse"
+                        }
+                    }
+                }
+            },
+            "Cliente": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "nome": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "ativo": {
+                        "type": "boolean"
+                    },
+                    "dataCadastro": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "Entrega": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "pedido": {
+                        "$ref": "#/components/schemas/Pedido"
+                    },
+                    "entregador": {
+                        "$ref": "#/components/schemas/Entregador"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "PENDENTE",
+                            "EM_ANDAMENTO",
+                            "ENTREGUE",
+                            "CANCELADA",
+                            "ATRASADA"
+                        ]
+                    },
+                    "enderecoEntrega": {
+                        "type": "string"
+                    },
+                    "dataHoraEstimada": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "dataHoraRealizada": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "custoEntrega": {
+                        "type": "number"
+                    }
+                }
+            },
+            "Entregador": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "nome": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "cpf": {
+                        "type": "string"
+                    },
+                    "telefone": {
+                        "type": "string"
+                    },
+                    "ativo": {
+                        "type": "boolean"
+                    },
+                    "dataCriacao": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "entregas": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Entrega"
+                        }
+                    }
+                }
+            },
+            "ItemPedido": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "pedido": {
+                        "$ref": "#/components/schemas/Pedido"
+                    },
+                    "produto": {
+                        "$ref": "#/components/schemas/Produto"
+                    },
+                    "quantidade": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "precoUnitario": {
+                        "type": "number"
+                    }
+                }
+            },
+            "Pedido": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "cliente": {
+                        "$ref": "#/components/schemas/Cliente"
+                    },
+                    "restaurante": {
+                        "$ref": "#/components/schemas/Restaurante"
+                    },
+                    "total": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "CRIADO",
+                            "CONFIRMADO",
+                            "EM_PREPARACAO",
+                            "ENVIADO",
+                            "ENTREGUE",
+                            "CANCELADO"
+                        ]
+                    },
+                    "dataPedido": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "itens": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ItemPedido"
+                        }
+                    },
+                    "enderecoEntrega": {
+                        "$ref": "#/components/schemas/Endereco"
+                    }
+                }
+            },
+            "Produto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "nome": {
+                        "type": "string"
+                    },
+                    "categoria": {
+                        "type": "string"
+                    },
+                    "descricao": {
+                        "type": "string"
+                    },
+                    "preco": {
+                        "type": "number"
+                    },
+                    "disponivel": {
+                        "type": "boolean"
+                    },
+                    "restaurante": {
+                        "$ref": "#/components/schemas/Restaurante"
+                    }
+                }
+            },
+            "Restaurante": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "nome": {
+                        "type": "string"
+                    },
+                    "telefone": {
+                        "type": "string"
+                    },
+                    "categoria": {
+                        "type": "string"
+                    },
+                    "taxaEntrega": {
+                        "type": "number"
+                    },
+                    "tempoEntregaMinutos": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "ativo": {
+                        "type": "boolean"
+                    },
+                    "dataCadastro": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                }
+            },
+            "ClienteRequest": {
+                "required": [
+                    "email",
+                    "nome"
+                ],
+                "type": "object",
+                "properties": {
+                    "nome": {
+                        "type": "string",
+                        "description": "Nome do cliente",
+                        "example": "Maria"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email do cliente",
+                        "example": "maria@example.com"
+                    }
+                }
+            },
+            "ClienteResponse": {
+                "required": [
+                    "ativo",
+                    "email",
+                    "id",
+                    "nome"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "ID do cliente",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "nome": {
+                        "type": "string",
+                        "description": "Nome do cliente",
+                        "example": "João da Silva"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email do cliente",
+                        "example": "joao.silva@example.com"
+                    },
+                    "ativo": {
+                        "type": "boolean",
+                        "description": "Status do cliente",
+                        "example": true
+                    }
+                },
+                "description": "Dados do cliente"
+            },
+            "ItemPedidoRequest": {
+                "required": [
+                    "produtoId"
+                ],
+                "type": "object",
+                "properties": {
+                    "produtoId": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "quantidade": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                },
+                "description": "Lista de itens do pedido",
+                "example": [
+                    {
+                        "produtoId": 1,
+                        "quantidade": 2
+                    }
+                ]
+            },
+            "PedidoRequest": {
+                "required": [
+                    "clienteId",
+                    "enderecoEntrega",
+                    "itens",
+                    "restauranteId"
+                ],
+                "type": "object",
+                "properties": {
+                    "clienteId": {
+                        "type": "integer",
+                        "description": "ID do cliente que está fazendo o pedido",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "restauranteId": {
+                        "type": "integer",
+                        "description": "ID do restaurante onde o pedido está sendo feito",
+                        "format": "int64",
+                        "example": 1
+                    },
+                    "enderecoEntrega": {
+                        "$ref": "#/components/schemas/Endereco"
+                    },
+                    "itens": {
+                        "type": "array",
+                        "description": "Lista de itens do pedido",
+                        "example": [
+                            {
+                                "produtoId": 1,
+                                "quantidade": 2
+                            }
+                        ],
+                        "items": {
+                            "$ref": "#/components/schemas/ItemPedidoRequest"
+                        }
+                    }
+                }
+            },
+            "RegisterRequest": {
+                "required": [
+                    "email",
+                    "nome",
+                    "role",
+                    "senha"
+                ],
+                "type": "object",
+                "properties": {
+                    "nome": {
+                        "type": "string",
+                        "description": "Nome completo do usuário",
+                        "example": "João Silva"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Email único do usuário",
+                        "example": "joao@exemplo.com"
+                    },
+                    "senha": {
+                        "type": "string",
+                        "description": "Senha do usuário (mínimo 6 caracteres)",
+                        "example": "123456"
+                    },
+                    "role": {
+                        "type": "string",
+                        "description": "Tipo de usuário",
+                        "example": "CLIENTE",
+                        "enum": [
+                            "CLIENTE",
+                            "RESTAURANTE",
+                            "ADMIN",
+                            "ENTREGADOR",
+                            "CLIENTE",
+                            "RESTAURANTE",
+                            "ENTREGADOR"
+                        ]
+                    },
+                    "restauranteId": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                },
+                "description": "Dados necessários para registrar um novo usuário"
+            },
+            "LoginRequest": {
+                "required": [
+                    "email",
+                    "senha"
+                ],
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "description": "Email do usuário",
+                        "example": "usuario@exemplo.com"
+                    },
+                    "senha": {
+                        "type": "string",
+                        "description": "Senha do usuário",
+                        "example": "123456"
+                    }
+                },
+                "description": "Dados necessários para realizar login no sistema"
+            }
+        }
+    }
+}

@@ -4,23 +4,30 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import io.swagger.v3.oas.annotations.media.Schema; 
 
 public class ProdutoRequest {
 
+
     @NotBlank(message = "Nome é obrigatório")
+    @Schema(description = "Nome do produto", example = "miojo", required = true)
     private String nome;
 
     @NotBlank(message = "Categoria é obrigatório")
+    @Schema(description = "Categoria do produto", example = "massa", required = true)
     private String categoria;
 
     @NotBlank(message = "Descrição é obrigatória")
+    @Schema(description = "Descrição do produto", example = "miojo", required = true)
     private String descricao;
 
     @NotNull(message = "Preço é obrigatório")
     @DecimalMin(value = "0.00", message = "Preço não pode ser negativo")
+    @Schema(description = "Preço do produto", example = "5", required = true)
     private BigDecimal preco;
 
     @NotNull(message = "ID do restaurante é obrigatório")
+    @Schema(description = "ID do restaurante", example = "1", required = true)
     private Long restauranteId;
 
     private Boolean disponivel; // Opcional para cadastro, padrão true

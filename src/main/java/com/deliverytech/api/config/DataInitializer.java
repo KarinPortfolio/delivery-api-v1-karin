@@ -19,6 +19,9 @@ public class DataInitializer {
             RestauranteRepository restauranteRepository,
             UsuarioRepository usuarioRepository,
             ProdutoRepository produtoRepository,
+            PedidoRepository pedidoRepository,
+            EntregaRepository entregaRepository,
+            EntregadorRepository entregadorRepository,
             PasswordEncoder passwordEncoder) {
         
         return args -> {
@@ -52,13 +55,13 @@ public class DataInitializer {
                 cliente1.setNome("João Silva");
                 cliente1.setEmail("joao.silva@email.com");
                 cliente1.setAtivo(true);
-                clienteRepository.save(cliente1);
+                cliente1 = clienteRepository.save(cliente1);
 
                 Cliente cliente2 = new Cliente();
                 cliente2.setNome("Maria Oliveira");
                 cliente2.setEmail("maria.o@email.com");
                 cliente2.setAtivo(true);
-                clienteRepository.save(cliente2);
+                cliente2 = clienteRepository.save(cliente2);
 
                 // Inserir restaurantes
                 Restaurante restaurante1 = new Restaurante();
@@ -68,7 +71,7 @@ public class DataInitializer {
                 restaurante1.setTempoEntregaMinutos(30);
                 restaurante1.setTelefone("11234567890");
                 restaurante1.setAtivo(true);
-                restauranteRepository.save(restaurante1);
+                restaurante1 = restauranteRepository.save(restaurante1);
 
                 Restaurante restaurante2 = new Restaurante();
                 restaurante2.setNome("Hamburgueria Top");
@@ -77,7 +80,7 @@ public class DataInitializer {
                 restaurante2.setTempoEntregaMinutos(25);
                 restaurante2.setTelefone("11876543210");
                 restaurante2.setAtivo(true);
-                restauranteRepository.save(restaurante2);
+                restaurante2 = restauranteRepository.save(restaurante2);
 
                 // Inserir usuários (exceto admin que já foi criado acima)
                 Usuario clienteUser = new Usuario();
@@ -115,6 +118,56 @@ public class DataInitializer {
                 burger1.setDisponivel(true);
                 burger1.setRestaurante(restaurante2);
                 produtoRepository.save(burger1);
+
+                // Inserir entregador
+                Entregador entregador1 = new Entregador();
+                entregador1.setNome("Carlos Motoboy");
+                entregador1.setTelefone("11999999999");
+                entregador1.setAtivo(true);
+                entregador1 = entregadorRepository.save(entregador1);
+
+                // Inserir pedido
+                Pedido pedido1 = new Pedido();
+                pedido1.setCliente(cliente1);
+                pedido1.setRestaurante(restaurante1);
+                pedido1.setStatus(StatusPedido.CRIADO);
+                pedido1.setTotal(pizza1.getPreco());
+                Endereco endereco = new Endereco(
+                    "Rua das Flores",
+                    "123",
+                    "Centro",
+                    "São Paulo",
+                    "SP",
+                    "01000-000"
+                );
+                pedido1.setEnderecoEntrega(endereco);
+                pedido1 = pedidoRepository.save(pedido1);
+
+                // Inserir item de pedido
+                ItemPedido itemPedido1 = new ItemPedido();
+                itemPedido1.setPedido(pedido1);
+                itemPedido1.setProduto(pizza1);
+                itemPedido1.setQuantidade(1);
+                itemPedido1.setPrecoUnitario(pizza1.getPreco());
+                // Se houver um repository para ItemPedido, salve:
+                // itemPedidoRepository.save(itemPedido1);
+                // Se for cascade pelo Pedido, adicione ao pedido e salve o pedido novamente:
+                if (pedido1.getItens() != null) {
+                    pedido1.getItens().add(itemPedido1);
+                }
+                else {
+                    java.util.List<ItemPedido> itens = new java.util.ArrayList<>();
+                    itens.add(itemPedido1);
+                    pedido1.setItens(itens);
+                }
+                pedidoRepository.save(pedido1);
+
+                // Inserir entrega
+                Entrega entrega1 = new Entrega();
+                entrega1.setPedido(pedido1);
+                entrega1.setEntregador(entregador1);
+                entrega1.setStatus(StatusEntrega.PENDENTE);
+                entregaRepository.save(entrega1);
 
                 System.out.println("✓ Dados iniciais criados com sucesso!");
             } else {

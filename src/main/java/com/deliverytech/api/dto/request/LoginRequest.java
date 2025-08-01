@@ -18,12 +18,6 @@ public class LoginRequest {
     @JsonProperty(value = "senha")
     private String senha;
 
-    // Setter alternativo para aceitar "password" no JSON
-    @JsonProperty("password")
-    public void setPassword(String password) {
-        this.senha = password;
-    }
-
     // Constructors
     public LoginRequest() {
     }

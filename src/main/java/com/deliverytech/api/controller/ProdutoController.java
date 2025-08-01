@@ -107,8 +107,16 @@ public class ProdutoController {
         return ResponseEntity.ok(response);
     }
 
+    @io.swagger.v3.oas.annotations.Operation(
+        summary = "Alterar disponibilidade do produto",
+        description = "Altera a disponibilidade de um produto pelo ID. Exemplo de requisição: /api/v1/produtos/1/disponibilidade?disponivel=false"
+    )
     @PatchMapping("/{id}/disponibilidade")
-    public ResponseEntity<ProdutoResponse> alterarDisponibilidade(@PathVariable Long id, @RequestParam boolean disponivel) {
+    public ResponseEntity<ProdutoResponse> alterarDisponibilidade(
+        @io.swagger.v3.oas.annotations.Parameter(description = "ID do produto", example = "1")
+        @PathVariable Long id,
+        @io.swagger.v3.oas.annotations.Parameter(description = "Disponibilidade do produto", example = "false")
+        @RequestParam boolean disponivel) {
         Optional<Produto> produtoOpt = produtoService.buscarPorId(id);
         if (produtoOpt.isEmpty()) {
             return ResponseEntity.notFound().build();

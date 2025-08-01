@@ -2,19 +2,34 @@ package com.deliverytech.api.dto.response;
 
 import com.deliverytech.api.model.StatusPedido;
 import com.deliverytech.api.model.Endereco;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class PedidoResponse {
+    @Schema(description = "ID do pedido", example = "1", required = true)
     private Long id;
+
+    @Schema(description = "ID do cliente", example = "1", required = true)
     private Long clienteId;
+
+    @Schema(description = "ID do restaurante", example = "1", required = true)
     private Long restauranteId;
+
+    @Schema(description = "Endereço de entrega", required = true)
     private Endereco enderecoEntrega;
+
+    @Schema(description = "Valor total do pedido", example = "100.00", required = true)
     private BigDecimal total;
+
+    @Schema(description = "Status do pedido", example = "PENDENTE", required = true)
     private StatusPedido status;
+
+    @Schema(description = "Data do pedido", example = "2023-03-15T10:00:00", required = true)
     private LocalDateTime dataPedido;
+
+    @Schema(description = "Itens do pedido", required = true)
     private List<ItemPedidoResponse> itens;
 
     public PedidoResponse() {}

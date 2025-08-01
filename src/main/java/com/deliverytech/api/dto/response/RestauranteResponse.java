@@ -1,15 +1,28 @@
 package com.deliverytech.api.dto.response;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 
 public class RestauranteResponse {
 
+    @Schema(description = "ID do restaurante", example = "1", required = true)
     private Long id;
+
+    @Schema(description = "Nome do restaurante", example = "Pizzaria do João", required = true)
     private String nome;
+
+    @Schema(description = "Categoria do restaurante", example = "Pizzaria", required = true)
     private String categoria;
+
+    @Schema(description = "Telefone do restaurante", example = "(11) 1234-5678", required = true)
     private String telefone;
+
+    @Schema(description = "Taxa de entrega do restaurante", example = "5.00", required = true)
     private BigDecimal taxaEntrega;
+
+    @Schema(description = "Tempo de entrega em minutos", example = "30", required = true)
     private Integer tempoEntregaMinutos;
+
+    @Schema(description = "Status do restaurante", example = "true", required = true)
     private Boolean ativo;
 
     // Constructors

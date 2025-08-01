@@ -1,14 +1,25 @@
 package com.deliverytech.api.dto.response;
 
 import java.math.BigDecimal;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 public class ProdutoResponse {
 
+    @Schema(description = "ID do produto", example = "1", required = true)
     private Long id;
+
+    @Schema(description = "Nome do produto", example = "Pizza Margherita", required = true)
     private String nome;
+
+    @Schema(description = "Categoria do produto", example = "Pizzas", required = true)
     private String categoria;
+
+    @Schema(description = "Descrição do produto", example = "Deliciosa pizza com molho de tomate e queijo", required = true)
     private String descricao;
+
+    @Schema(description = "Preço do produto", example = "29.90", required = true)
     private BigDecimal preco;
+
+    @Schema(description = "Disponibilidade do produto", example = "true", required = true)
     private Boolean disponivel;
 
     // Construtores

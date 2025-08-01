@@ -1,7 +1,8 @@
 package com.deliverytech.api.dto.response;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.io.Serializable;
 
+@Schema(description = "Dados de erro retornados pela API")              
 public class ErrorResponse implements Serializable {
     private int status;
     private String error;

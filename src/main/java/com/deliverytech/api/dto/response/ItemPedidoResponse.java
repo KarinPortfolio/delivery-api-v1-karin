@@ -1,12 +1,19 @@
 package com.deliverytech.api.dto.response;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 
 public class ItemPedidoResponse {
+    @Schema(description = "ID do produto", example = "1", required = true)
     private Long produtoId;
+
+    @Schema(description = "Nome do produto", example = "Pizza Margherita", required = true)
     private String nomeProduto;
+
+    @Schema(description = "Quantidade do produto", example = "2", required = true)
     private Integer quantidade;
-    private BigDecimal precoUnitario;
+
+    @Schema(description = "Preço unitário do produto", example = "29.90", required = true)
+        private BigDecimal precoUnitario;
 
     public ItemPedidoResponse() {}
 

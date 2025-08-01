@@ -5,7 +5,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Etapa de runtime
-FROM eclipse-temurin:21-jdk-alpine
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 # LINHA CORRIGIDA AQUI:
 COPY --from=build /app/target/api-application-0.0.1-SNAPSHOT.jar app.jar

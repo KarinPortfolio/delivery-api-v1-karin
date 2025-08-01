@@ -2,16 +2,25 @@ package com.deliverytech.api.dto.response;
 
 import com.deliverytech.api.model.Role;
 import com.deliverytech.api.model.Usuario;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
 public class UsuarioResponse {
 
+    @Schema(description = "ID do usuário", example = "1", required = true)
     private Long id;
+
+    @Schema(description = "Nome do usuário", example = "João da Silva", required = true)
     private String nome;
+
+    @Schema(description = "Email do usuário", example = "joao.silva@example.com", required = true)
     private String email;
+
+    @Schema(description = "Papel do usuário", example = "CLIENTE", required = true)
     private Role role;
-    private Boolean ativo;
+
+    @Schema(description = "Status do usuário", example = "true", required = true)
+        private Boolean ativo;
     private LocalDateTime dataCriacao;
 
     // Constructors
