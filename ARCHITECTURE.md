@@ -20,34 +20,34 @@ Este projeto é uma API RESTful para uma plataforma de entrega de alimentos, des
 
 ### 3. Módulos e Camadas Principais
 
-#### a. Controller Layer (`com.deliverytech.api.controller`)
+#### a. Controller (`com.deliverytech.api.controller`)
 - Expõe os endpoints REST para todos os recursos principais (autenticação, usuários, restaurantes, produtos, pedidos, entregas, etc.).
 
 - Lida com as requisições/respostas HTTP e delega a lógica de negócio para os serviços.
 
-#### b. Service Layer (`com.deliverytech.api.service`)
+#### b. Service (`com.deliverytech.api.service`)
 - Contém a lógica de negócio para cada domínio (ex: PedidoService, EntregaService, UsuarioService).
 
 - Lida com validação, orquestração e chamadas aos repositórios.
 
-#### c. Repository Layer (`com.deliverytech.api.repository`)
+#### c. Repository (`com.deliverytech.api.repository`)
 - Estende os repositórios do Spring Data JPA para operações CRUD e consultas.
 
 - Mapeia as entidades para as tabelas do banco de dados.
 
-#### d. Model Layer (`com.deliverytech.api.model`)
+#### d. Model (`com.deliverytech.api.model`)
 - Contém as entidades JPA: Usuario, Restaurante, Produto, Pedido, Entrega, etc.
 
 - Modela relacionamentos (ex: OneToMany, ManyToOne, etc.) e restrições.
 
-#### e. Security Layer (`com.deliverytech.api.security`)
+#### e. Security (`com.deliverytech.api.security`)
 - Filtro de autenticação JWT e utilitário (JwtAuthenticationFilter, JwtUtil).
 
 - Implementação de UserDetailsService para buscar usuários.
 
 - Configuração de segurança (SecurityConfig) para controle de acesso baseado em papéis.
 
-#### f. Config Layer (`com.deliverytech.api.config`)
+#### f. Config (`com.deliverytech.api.config`)
 - Configuração do Swagger/OpenAPI, configuração de segurança e outras definições de toda a aplicação.
 
 ---
@@ -90,12 +90,12 @@ Este projeto é uma API RESTful para uma plataforma de entrega de alimentos, des
 
 ### 9. Compilação e Execução
 - Compilação: `mvn clean install`
-- Execução: `mvn spring-boot:run` ou via Docker (see `Dockerfile`/`docker-compose.yml`)
+- Execução: `mvn spring-boot:run` ou via Docker (`Dockerfile`/`docker-compose.yml`)
 
 ---
 
 ### 10. Extensibilidade
-- A estrutura modular permite fácil adição de novas funcionalidades (ex: pagamento, notificações).
+- A estrutura modular permite adição de novas funcionalidades ainda não implementadas (ex: pagamento, notificações).
 
 - Segurança e validação são centralizadas para facilitar a manutenção.
 
