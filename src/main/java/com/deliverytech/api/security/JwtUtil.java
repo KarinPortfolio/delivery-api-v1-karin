@@ -44,6 +44,13 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
+    /**
+     * Gera um token JWT com as informações do usuário.
+     * Inclui userId, role e, se aplicável, restauranteId nos claims.
+     * @param userDetails Detalhes do usuário do Spring Security.
+     * @param usuario Entidade Usuario.
+     * @return O token JWT assinado.
+     */
     public String generateToken(UserDetails userDetails, Usuario usuario) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", usuario.getId());
@@ -54,11 +61,22 @@ public class JwtUtil {
                 claims.put("restauranteId", usuario.getRestaurante().getId());
             }
         } catch (Exception e) {
-            // Log do erro sem interromper o processo de geração do token
             System.out.println("Warning: Could not access restaurant for user " + usuario.getEmail() + ": " + e.getMessage());
         }
 
         return createToken(claims, userDetails.getUsername());
+    }
+    
+    /**
+     * Gera um token JWT apenas com o username como subject.
+     * Útil para o fluxo de refresh token, onde não é necessário recarregar
+     * todos os dados do usuário.
+     * @param username O nome de usuário para o subject do token.
+     * @return O token JWT assinado.
+     */
+    public String generateTokenFromUsername(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, username);
     }
 
     private String createToken(Map<String, Object> claims, String subject) {

@@ -43,16 +43,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 try {
                     String username = jwtUtil.extractUsername(jwt);
                     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        // Always load userDetails for test compatibility
+                        org.springframework.security.core.userdetails.UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                        // Extract role from JWT claim
+                        String role = null;
                         try {
-                            org.springframework.security.core.userdetails.UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                            if (jwtUtil.isTokenValid(jwt, userDetails)) {
-                                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                                        userDetails, null, userDetails.getAuthorities());
-                                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                                SecurityContextHolder.getContext().setAuthentication(authToken);
+                            Object roleClaim = jwtUtil.extractClaim(jwt, claims -> claims.get("role"));
+                            if (roleClaim != null) {
+                                role = roleClaim.toString();
                             }
-                        } catch (UsernameNotFoundException | JwtException | IllegalArgumentException e) {
-                            System.err.println("Erro ao carregar usuário: " + e.getMessage());
+                        } catch (Exception e) {
+                            System.err.println("Erro ao extrair role do JWT: " + e.getMessage());
+                        }
+                        if (jwtUtil.isTokenValid(jwt, userDetails)) {
+                            java.util.List<org.springframework.security.core.GrantedAuthority> authorities;
+if (role != null) {
+    authorities = java.util.Collections.singletonList(
+        new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role)
+    );
+} else {
+    
+    authorities = new java.util.ArrayList<>(userDetails.getAuthorities());
+}
+                            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, authorities);
+                            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            SecurityContextHolder.getContext().setAuthentication(authToken);
                         }
                     }
                 } catch (ExpiredJwtException e) {
