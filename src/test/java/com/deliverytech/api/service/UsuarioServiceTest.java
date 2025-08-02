@@ -237,7 +237,7 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar RuntimeException ao tentar atualizar usuário inexistente")
+    @DisplayName("Deve lançar EntityNotFoundException ao tentar atualizar usuário inexistente")
     void deveLancarRuntimeExceptionAoAtualizarUsuarioInexistente() {
         // Arrange
         Usuario usuarioDetalhes = new Usuario();
@@ -245,11 +245,11 @@ class UsuarioServiceTest {
         when(usuarioRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         // Act & Assert
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        com.deliverytech.api.exception.EntityNotFoundException exception = assertThrows(
+                com.deliverytech.api.exception.EntityNotFoundException.class,
                 () -> usuarioService.atualizarUsuario(99L, usuarioDetalhes));
 
-        assertEquals("Usuário não encontrado para atualização", exception.getMessage());
+        assertEquals("Usuário com ID 99 não foi encontrado(a)", exception.getMessage());
         verify(usuarioRepository, times(1)).findById(99L);
         verify(passwordEncoder, never()).encode(anyString());
         verify(usuarioRepository, never()).save(any(Usuario.class));
@@ -273,17 +273,17 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lançar RuntimeException ao tentar deletar usuário inexistente")
+    @DisplayName("Deve lançar EntityNotFoundException ao tentar deletar usuário inexistente")
     void deveLancarRuntimeExceptionAoDeletarUsuarioInexistente() {
         // Arrange
         when(usuarioRepository.existsById(anyLong())).thenReturn(false);
 
         // Act & Assert
-        RuntimeException exception = assertThrows(
-                RuntimeException.class,
+        com.deliverytech.api.exception.EntityNotFoundException exception = assertThrows(
+                com.deliverytech.api.exception.EntityNotFoundException.class,
                 () -> usuarioService.deletarUsuario(99L));
 
-        assertEquals("Usuário não encontrado para exclusão", exception.getMessage());
+        assertEquals("Usuário com ID 99 não foi encontrado(a)", exception.getMessage());
         verify(usuarioRepository, times(1)).existsById(99L);
         verify(usuarioRepository, never()).deleteById(anyLong());
     }

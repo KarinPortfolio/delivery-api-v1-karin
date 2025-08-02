@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,8 +29,15 @@ import com.deliverytech.api.service.PedidoService;
 import com.deliverytech.api.service.ProdutoService;
 import com.deliverytech.api.service.RestauranteService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
+@Tag(name = "Pedidos", description = "Gerenciamento de pedidos do sistema de delivery")
 @RestController
 @RequestMapping("/api/v1/pedidos")
 public class PedidoController {
@@ -165,10 +173,27 @@ public class PedidoController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Cancelar pedido", description = "Cancela um pedido alterando seu status para CANCELADO")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Pedido cancelado com sucesso"),
+        @ApiResponse(responseCode = "404", description = "Pedido não encontrado"),
+        @ApiResponse(responseCode = "409", description = "Pedido não pode ser cancelado devido ao seu status atual (já entregue ou já cancelado)")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> cancelar(@PathVariable Long id) {
-        pedidoService.cancelar(id);
-        return ResponseEntity.noContent().build();
+        try {
+            pedidoService.cancelar(id);
+            return ResponseEntity.noContent().build();
+        } catch (com.deliverytech.api.exception.EntityNotFoundException ex) {
+            // O GlobalExceptionHandler tratará esta exceção
+            throw ex;
+        } catch (com.deliverytech.api.exception.ConflictException ex) {
+            // O GlobalExceptionHandler tratará esta exceção
+            throw ex;
+        } catch (DataIntegrityViolationException ex) {
+            // O GlobalExceptionHandler tratará esta exceção
+            throw ex;
+        }
     }
 
     private PedidoResponse convertToResponse(Pedido pedido) {

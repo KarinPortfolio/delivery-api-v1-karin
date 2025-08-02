@@ -1,6 +1,9 @@
 // src/main/java/com/deliverytech/api/model/Entrega.java
 package com.deliverytech.api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDateTime; // Se houver custo de entrega
 import jakarta.persistence.Entity;
@@ -14,29 +17,40 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
+@Schema(description = "Entidade que representa uma entrega")
 public class Entrega {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID único da entrega", example = "1")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id")
+    @JsonManagedReference
+    @Schema(description = "Pedido associado à entrega")
     private Pedido pedido; // Relacionamento com Pedido
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "entregador_id")
+    @JsonBackReference
+    @Schema(description = "Entregador responsável pela entrega")
     private Entregador entregador; // Relacionamento com Entregador
 
     @Enumerated(EnumType.STRING)
+    @Schema(description = "Status atual da entrega")
     private StatusEntrega status; // Você precisará de um enum StatusEntrega
 
+    @Schema(description = "Endereço de entrega", example = "Rua das Flores, 123")
     private String enderecoEntrega;
 
+    @Schema(description = "Data e hora estimada para entrega")
     private LocalDateTime dataHoraEstimada;
 
+    @Schema(description = "Data e hora real da entrega")
     private LocalDateTime dataHoraRealizada;
 
+    @Schema(description = "Custo da entrega", example = "5.50")
     private BigDecimal custoEntrega;
 
     // Constructors

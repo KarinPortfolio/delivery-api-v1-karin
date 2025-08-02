@@ -5,8 +5,10 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -72,6 +74,64 @@ public class GlobalExceptionHandler {
     }
 
     return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<ErrorResponse> handleDataIntegrityViolationException(
+      DataIntegrityViolationException ex, WebRequest request) {
+
+    logger.error("Violação de integridade de dados: {}", ex.getMessage());
+
+    String message = "Dados duplicados ou violação de integridade";
+    String detail = ex.getMessage();
+
+    // Personalizar mensagem baseada no tipo de violação
+    if (ex.getMessage() != null) {
+      if (ex.getMessage().contains("email")) {
+        message = "Email já cadastrado";
+        detail = "Este email já está sendo utilizado por outro entregador";
+      } else if (ex.getMessage().contains("cpf")) {
+        message = "CPF já cadastrado";
+        detail = "Este CPF já está sendo utilizado por outro entregador";
+      }
+    }
+
+    ErrorResponse errorResponse = new ErrorResponse(
+        HttpStatus.CONFLICT.value(),
+        message,
+        detail,
+        request.getDescription(false).replace("uri=", ""));
+    errorResponse.setErrorCode("DATA_INTEGRITY_VIOLATION");
+
+    return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(
+      HttpMessageNotReadableException ex, WebRequest request) {
+
+    logger.error("Erro ao ler JSON: {}", ex.getMessage());
+
+    String message = "JSON inválido";
+    String detail = "Verifique se todas as strings estão entre aspas e se a sintaxe JSON está correta";
+
+    // Tentar identificar o problema específico
+    if (ex.getMessage() != null) {
+      if (ex.getMessage().contains("Unexpected character")) {
+        detail = "Caractere inesperado no JSON. Verifique se todos os valores string estão entre aspas duplas";
+      } else if (ex.getMessage().contains("not a valid representation")) {
+        detail = "Formato de dados inválido. Verifique os tipos dos campos (string, number, boolean)";
+      }
+    }
+
+    ErrorResponse errorResponse = new ErrorResponse(
+        HttpStatus.BAD_REQUEST.value(),
+        message,
+        detail,
+        request.getDescription(false).replace("uri=", ""));
+    errorResponse.setErrorCode("MALFORMED_JSON");
+
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
     @ExceptionHandler(Exception.class)

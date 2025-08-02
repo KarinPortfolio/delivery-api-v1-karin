@@ -64,10 +64,51 @@ public class PedidoServiceImpl implements PedidoService {
     }
 
     @Override
+    @org.springframework.transaction.annotation.Transactional
     public void cancelar(Long id) {
-        if (!pedidoRepository.existsById(id)) {
-            throw new RuntimeException("Pedido não encontrado para cancelamento: " + id);
+        // Verificar se o pedido existe
+        Optional<Pedido> pedidoOpt = pedidoRepository.findById(id);
+        if (pedidoOpt.isEmpty()) {
+            throw new com.deliverytech.api.exception.EntityNotFoundException("Pedido não encontrado para cancelamento", "PEDIDO_NOT_FOUND");
         }
-        pedidoRepository.deleteById(id);
+        
+        Pedido pedido = pedidoOpt.get();
+        
+        // Verificar se o pedido pode ser cancelado baseado no status
+        if (pedido.getStatus() == StatusPedido.ENTREGUE) {
+            throw new com.deliverytech.api.exception.ConflictException(
+                "Não é possível cancelar um pedido que já foi entregue", 
+                "status", 
+                pedido.getStatus().toString()
+            );
+        }
+        
+        if (pedido.getStatus() == StatusPedido.CANCELADO) {
+            throw new com.deliverytech.api.exception.ConflictException(
+                "Pedido já está cancelado", 
+                "status", 
+                pedido.getStatus().toString()
+            );
+        }
+        
+        try {
+            // Ao invés de deletar, alterar o status para CANCELADO
+            pedido.setStatus(StatusPedido.CANCELADO);
+            pedidoRepository.save(pedido);
+            
+            // Verificar se há entregas associadas e cancelá-las também
+            List<com.deliverytech.api.model.Entrega> entregas = entregaRepository.findByPedido_Id(id);
+            for (com.deliverytech.api.model.Entrega entrega : entregas) {
+                entrega.setStatus(com.deliverytech.api.model.StatusEntrega.CANCELADA);
+                entregaRepository.save(entrega);
+            }
+            
+        } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+            throw new com.deliverytech.api.exception.ConflictException(
+                "Não é possível cancelar este pedido devido a dependências no sistema", 
+                "pedido", 
+                id.toString()
+            );
+        }
     }
 }

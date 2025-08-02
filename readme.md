@@ -307,4 +307,3 @@ Para acessar o console do banco H2:
 
 [Karin] - [SDE-TI13]
 Desenvolvido com JDK 21 e Spring Boot 3.2.x
-Obs. este é um projeto de estudo e não é usado em produção.

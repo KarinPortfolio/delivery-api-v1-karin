@@ -1,29 +1,43 @@
 package com.deliverytech.api.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Schema(description = "Entidade que representa um entregador")
 public class Entregador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID único do entregador", example = "1")
     private Long id;
 
+    @Schema(description = "Nome completo do entregador", example = "Maria Julia Oliveira")
     private String nome;
 
     @Column(unique = true)
+    @Schema(description = "Email único do entregador", example = "maju@example.com")
     private String email;
 
     @Column(unique = true)
+    @Schema(description = "CPF único do entregador", example = "987.677.321-00")
     private String cpf;
 
+    @Schema(description = "Telefone do entregador", example = "5511998877665")
     private String telefone;
+    
+    @Schema(description = "Status ativo do entregador", example = "true")
     private Boolean ativo = true;
+    
+    @Schema(description = "Data de criação do cadastro")
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
     @OneToMany(mappedBy = "entregador", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @Schema(description = "Lista de entregas associadas ao entregador")
     private List<Entrega> entregas;
 
     // Construtores
