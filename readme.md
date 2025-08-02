@@ -223,9 +223,6 @@ Sistema de delivery desenvolvido com Spring Boot e Java 21.
 │       │                   └── StatusEntregaDebug.java
 │       └── resources
 │           └── application-test.properties
-├── teste_admin.json
-├── teste_admin_com_restaurante.json
-└── teste_restaurante.json
 
 ```
 
@@ -253,7 +250,7 @@ Sistema de delivery desenvolvido com Spring Boot e Java 21.
 
 1. **Pré-requisitos:** JDK 21 instalado
 2. Clone o repositório
-3. Execute: `./mvnw spring-boot:run` (no Linux) ou `mvn spring-boot:run` (no Windows)
+3. Execute: `./mvnw spring-boot:run` (no Linux) ou `mvn spring-boot:run` (no Windows) ou via docker `docker-compose up --build`
 4. Acesse: http://localhost:8081 (porta padrão da aplicação)
 
 ##🗒️Endpoints
@@ -287,3 +284,4 @@ Para acessar o console do banco H2:
 
 [Karin] - [SDE-TI13]
 Desenvolvido com JDK 21 e Spring Boot 3.2.x
+Obs. este é um projeto de estudo e não é usado em produção.
